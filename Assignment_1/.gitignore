@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Large regenerable data/output (see README.md for how to regenerate)
+data/
+output/tokenized.jsonl
+output/tokenized_readable.txt
+output_full/tokenized.jsonl.gz
+output_full/tokenized_sentences.parquet

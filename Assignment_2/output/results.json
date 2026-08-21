@@ -1,0 +1,29 @@
+{
+  "greedy": {
+    "exact_match_accuracy": 0.691,
+    "avg_edit_distance": 1.29,
+    "avg_normalized_edit_distance": 0.03299159490226208,
+    "runtime_sec": 0.012372600001981482
+  },
+  "dp": {
+    "exact_match_accuracy": 0.982,
+    "avg_edit_distance": 0.028,
+    "avg_normalized_edit_distance": 0.0009425749382592912,
+    "runtime_sec": 0.16909450001548976
+  },
+  "greedy_trie": {
+    "exact_match_accuracy": 0.691,
+    "avg_edit_distance": 1.29,
+    "avg_normalized_edit_distance": 0.03299159490226208,
+    "runtime_sec": 0.0061046000046189874
+  },
+  "dp_trie": {
+    "exact_match_accuracy": 0.982,
+    "avg_edit_distance": 0.028,
+    "avg_normalized_edit_distance": 0.0009425749382592912,
+    "runtime_sec": 0.1294136999931652
+  },
+  "test_case_count": 1000,
+  "vocabulary_size": 1500,
+  "outputs_match_dict_version": true
+}

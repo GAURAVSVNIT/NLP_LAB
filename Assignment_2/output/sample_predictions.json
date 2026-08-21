@@ -1,0 +1,92 @@
+[
+  {
+    "input": "itthatthecitytakestepstothisproblem",
+    "ground_truth": "it that the city take steps to this problem",
+    "greedy": "it that the city takes t e p s to this problem",
+    "dp": "it that the city take steps to this problem"
+  },
+  {
+    "input": "oftitlelawwasalsobythe",
+    "ground_truth": "of title law was also by the",
+    "greedy": "of title law was also by the",
+    "dp": "of title law was also by the"
+  },
+  {
+    "input": "failuretodothiswillcontinuetoplaceaon",
+    "ground_truth": "failure to do this will continue to place a on",
+    "greedy": "failure to do this will continue top l a c e a on",
+    "dp": "failure to do this will continue to place a on"
+  },
+  {
+    "input": "onotherthethat",
+    "ground_truth": "on other the that",
+    "greedy": "on other the that",
+    "dp": "on other the that"
+  },
+  {
+    "input": "williamforfromhiswifeincourt",
+    "ground_truth": "william for from his wife in court",
+    "greedy": "william for from his wife in court",
+    "dp": "william for from his wife in court"
+  },
+  {
+    "input": "thecouplewasmarried",
+    "ground_truth": "the couple was married",
+    "greedy": "the couple was married",
+    "dp": "the couple was married"
+  },
+  {
+    "input": "theyhaveasonwilliamandadaughterof",
+    "ground_truth": "they have a son william and a daughter of",
+    "greedy": "they have as on william and a daughter of",
+    "dp": "they have as on william and a daughter of"
+  },
+  {
+    "input": "forthesaidthatanpropertyhasbeenagreedupon",
+    "ground_truth": "for the said that an property has been agreed upon",
+    "greedy": "forth e said that an property has been agreed upon",
+    "dp": "for the said that an property has been agreed upon"
+  },
+  {
+    "input": "thetheasandhisageas",
+    "ground_truth": "the the as and his age as",
+    "greedy": "the the as and his age as",
+    "dp": "the the as and his age as"
+  },
+  {
+    "input": "ithisageasandplaceofas",
+    "ground_truth": "it his age as and place of as",
+    "greedy": "it his age as and place of as",
+    "dp": "it his age as and place of as"
+  },
+  {
+    "input": "thehomeisataj",
+    "ground_truth": "the home is at aj",
+    "greedy": "the home is at aj",
+    "dp": "the home is at aj"
+  },
+  {
+    "input": "henrywasontheasthe",
+    "ground_truth": "henry was on the as the",
+    "greedy": "henry was on the as the",
+    "dp": "henry was on the as the"
+  },
+  {
+    "input": "hasbeenofwithofonebriefsince",
+    "ground_truth": "has been of with of one brief since",
+    "greedy": "has been of with of one brief since",
+    "dp": "has been of with of one brief since"
+  },
+  {
+    "input": "hispoliticalgoesbacktohiselectiontocitycouncilin",
+    "ground_truth": "his political goes back to his election to city council in",
+    "greedy": "his political goes back to his election to city council in",
+    "dp": "his political goes back to his election to city council in"
+  },
+  {
+    "input": "thepresenttermofoffice",
+    "ground_truth": "the present term of office",
+    "greedy": "the present term of office",
+    "dp": "the present term of office"
+  }
+]

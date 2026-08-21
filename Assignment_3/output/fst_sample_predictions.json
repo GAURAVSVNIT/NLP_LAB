@@ -1,0 +1,105 @@
+{
+  "example_tests": [
+    {
+      "input": "foxes",
+      "expected": "fox+N+PL",
+      "actual": "fox+N+PL",
+      "match": true
+    },
+    {
+      "input": "fox",
+      "expected": "fox+N+SG",
+      "actual": "fox+N+SG",
+      "match": true
+    },
+    {
+      "input": "watches",
+      "expected": "watch+N+PL",
+      "actual": "watch+N+PL",
+      "match": true
+    },
+    {
+      "input": "tries",
+      "expected": "try+N+PL",
+      "actual": "try+N+PL",
+      "match": true
+    },
+    {
+      "input": "bags",
+      "expected": "bag+N+PL",
+      "actual": "bag+N+PL",
+      "match": true
+    },
+    {
+      "input": "foxs",
+      "expected": "Invalid Word",
+      "actual": "Invalid Word",
+      "match": true
+    }
+  ],
+  "state_traces": [
+    {
+      "input": "foxes",
+      "analysis": "fox+N+PL",
+      "states_visited": [
+        "Q0",
+        "Q_S",
+        "Q_SE",
+        "COPY_PL"
+      ]
+    },
+    {
+      "input": "fox",
+      "analysis": "fox+N+SG",
+      "states_visited": [
+        "Q0",
+        "COPY_SG"
+      ]
+    },
+    {
+      "input": "watches",
+      "analysis": "watch+N+PL",
+      "states_visited": [
+        "Q0",
+        "Q_S",
+        "Q_SE",
+        "COPY_PL"
+      ]
+    },
+    {
+      "input": "tries",
+      "analysis": "try+N+PL",
+      "states_visited": [
+        "Q0",
+        "Q_S",
+        "Q_SE",
+        "Q_SEI",
+        "COPY_PL"
+      ]
+    },
+    {
+      "input": "bags",
+      "analysis": "bag+N+PL",
+      "states_visited": [
+        "Q0",
+        "Q_S",
+        "COPY_PL"
+      ]
+    },
+    {
+      "input": "foxs",
+      "analysis": "Invalid Word",
+      "states_visited": [
+        "Q0",
+        "Q_S",
+        "REJECT"
+      ]
+    }
+  ],
+  "summary": {
+    "words_analyzed": 17053,
+    "plural": 5937,
+    "singular": 11113,
+    "invalid": 3
+  }
+}

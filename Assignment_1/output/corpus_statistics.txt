@@ -1,0 +1,9 @@
+Corpus Statistics - IndicCorpV2 partial-guj_Gujr
+==================================================
+Total number of sentences : 511,021
+Total number of words     : 7,818,047
+Total number of characters: 34,428,416
+Average Sentence Length   : 15.2989 words/sentence
+Average Word Length       : 4.4037 chars/word
+Type/Token Ratio (TTR)    : 0.045301
+  (unique tokens: 354,162 / total tokens: 7,818,047)

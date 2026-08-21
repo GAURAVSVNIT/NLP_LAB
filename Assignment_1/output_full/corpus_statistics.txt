@@ -1,0 +1,10 @@
+Corpus Statistics - IndicCorpV2 FULL guj_Gujr (all 10 parquet shards)
+======================================================================
+Total number of sentences : 23,594,135
+Total number of words     : 359,242,383
+Total number of characters: 1,583,053,314
+Average Sentence Length   : 15.2259 words/sentence
+Average Word Length       : 4.4066 chars/word
+Type/Token Ratio (TTR)    : 0.009526
+  (unique tokens: 3,422,061 / total tokens: 359,242,383)
+Paragraphs processed      : 7,650,079

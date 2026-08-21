@@ -1,0 +1,83 @@
+{
+  "example_tests": [
+    {
+      "input": "cat",
+      "expected": "Accepted",
+      "actual": "Accepted",
+      "match": true
+    },
+    {
+      "input": "dog",
+      "expected": "Accepted",
+      "actual": "Accepted",
+      "match": true
+    },
+    {
+      "input": "a",
+      "expected": "Accepted",
+      "actual": "Accepted",
+      "match": true
+    },
+    {
+      "input": "zebra",
+      "expected": "Accepted",
+      "actual": "Accepted",
+      "match": true
+    },
+    {
+      "input": "dog1",
+      "expected": "Not Accepted",
+      "actual": "Not Accepted",
+      "match": true
+    },
+    {
+      "input": "1dog",
+      "expected": "Not Accepted",
+      "actual": "Not Accepted",
+      "match": true
+    },
+    {
+      "input": "DogHouse",
+      "expected": "Not Accepted",
+      "actual": "Not Accepted",
+      "match": true
+    },
+    {
+      "input": "Dog_house",
+      "expected": "Not Accepted",
+      "actual": "Not Accepted",
+      "match": true
+    },
+    {
+      "input": " cats",
+      "expected": "Not Accepted",
+      "actual": "Not Accepted",
+      "match": true
+    }
+  ],
+  "corpus_tokens_checked": 19287,
+  "accepted": 17053,
+  "not_accepted": 2234,
+  "sample_not_accepted": [
+    "$.027",
+    "$.03",
+    "$.054/mbf",
+    "$.07",
+    "$.07/cwt",
+    "$.076",
+    "$.09",
+    "$.105",
+    "$.12",
+    "$.30",
+    "$.30/mbf",
+    "$.50",
+    "$.65",
+    "$.75",
+    "$.80",
+    "$.86",
+    "$.90",
+    "$0.9",
+    "$1,000",
+    "$1,000,000"
+  ]
+}

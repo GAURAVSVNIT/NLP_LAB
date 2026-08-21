@@ -1,0 +1,6 @@
+[project]
+name = "assignment-3"
+version = "0.1.0"
+description = "NLP Lab 3: DFA for simplified English words and FST for noun morphology (Brown corpus)"
+requires-python = ">=3.11"
+dependencies = []

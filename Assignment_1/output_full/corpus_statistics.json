@@ -1,0 +1,10 @@
+{
+  "total_sentences": 23594135,
+  "total_words": 359242383,
+  "total_characters": 1583053314,
+  "average_sentence_length": 15.225918771762558,
+  "average_word_length": 4.406644062373899,
+  "type_token_ratio": 0.009525771907598108,
+  "unique_tokens": 3422061,
+  "paragraphs_processed": 7650079
+}
