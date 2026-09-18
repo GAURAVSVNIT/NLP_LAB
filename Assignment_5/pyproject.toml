@@ -1,0 +1,9 @@
+[project]
+name = "assignment-5"
+version = "0.1.0"
+description = "NLP Lab 5: Add-k (k=0.3) smoothing applied to the 4 n-gram models from Assignment 4, on the Gujarati (guj_Gujr) corpus"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.11.1",
+    "reportlab>=4.2.5",
+]

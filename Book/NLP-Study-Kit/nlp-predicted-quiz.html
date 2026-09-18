@@ -1,0 +1,563 @@
+<title>Predicted NLP Quiz</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f6f4ee; --surface:#ffffff; --surface-2:#eee9dc; --border:#ddd6c4;
+    --ink:#1b2422; --ink-2:#4a5551; --muted:#7c8783;
+    --accent:#00897b; --accent-rgb:0,137,123;
+    --accent-2:#d9661c; --accent-2-rgb:217,102,28;
+    --accent-3:#7a5fb0; --accent-3-rgb:122,95,176;
+    --good:#2e7d4f; --bad:#b3402f;
+    --shadow: 0 1px 2px rgba(20,20,16,.04), 0 6px 20px rgba(20,20,16,.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121917; --surface:#182220; --surface-2:#1e2b28; --border:#2b3a36;
+      --ink:#eef2ef; --ink-2:#b9c6c1; --muted:#82918c;
+      --accent:#39b3a4; --accent-rgb:57,179,164;
+      --accent-2:#e28a52; --accent-2-rgb:226,138,82;
+      --accent-3:#a08bd0; --accent-3-rgb:160,139,208;
+      --good:#5fbf86; --bad:#e0715c;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121917; --surface:#182220; --surface-2:#1e2b28; --border:#2b3a36;
+    --ink:#eef2ef; --ink-2:#b9c6c1; --muted:#82918c;
+    --accent:#39b3a4; --accent-rgb:57,179,164;
+    --accent-2:#e28a52; --accent-2-rgb:226,138,82;
+    --accent-3:#a08bd0; --accent-3-rgb:160,139,208;
+    --good:#5fbf86; --bad:#e0715c;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15.5px; line-height:1.6;}
+  h1,h2,h3{font-family:"Newsreader",Georgia,serif; text-wrap:balance; font-weight:600; color:var(--ink);}
+  code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+  em{font-style:italic;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 clamp(18px,4vw,32px) 90px;}
+
+  .hero{padding:36px 0 22px; border-bottom:1px solid var(--border); margin-bottom:6px;}
+  .eyebrow{text-transform:uppercase; letter-spacing:.11em; font-size:11.5px; font-weight:600; color:var(--accent);}
+  .hero h1{font-size:clamp(26px,4vw,36px); margin:8px 0 10px;}
+  .hero p{color:var(--ink-2); font-size:14.5px; max-width:660px;}
+
+  .tabs{position:sticky; top:0; z-index:20; background:var(--bg); display:flex; gap:6px; padding:14px 0; border-bottom:1px solid var(--border); margin-bottom:28px; overflow-x:auto;}
+  .tab-btn{font-family:"IBM Plex Sans",sans-serif; font-size:13px; font-weight:600; color:var(--ink-2); background:var(--surface); border:1px solid var(--border); padding:8px 15px; border-radius:99px; cursor:pointer; white-space:nowrap;}
+  .tab-btn.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .section-head{margin:30px 0 16px;}
+  .section-head:first-child{margin-top:0;}
+  .section-head h2{font-size:21px; margin:4px 0 6px;}
+  .section-head p{color:var(--ink-2); font-size:13.6px; max-width:640px;}
+
+  .corpus-block{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 18px; font-family:"IBM Plex Mono",monospace; font-size:13px; line-height:1.85; margin-bottom:20px;}
+  .corpus-block .lbl{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); display:block; margin-bottom:6px;}
+
+  .mcq{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:12px; box-shadow:var(--shadow);}
+  .mcq .qnum{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); font-weight:600; margin-bottom:5px; display:block;}
+  .mcq .marks{float:right; font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); font-weight:600;}
+  .mcq .qtext{font-size:14.3px; font-weight:500; margin-bottom:10px; color:var(--ink);}
+  .mcq .opts{list-style:none; margin:0 0 10px; padding:0; display:grid; gap:6px;}
+  .mcq .opts li{border:1px solid var(--border); border-radius:8px; padding:8px 11px; font-size:13.3px; color:var(--ink-2); display:flex; gap:8px;}
+  .mcq .opts li .k{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--muted); flex:0 0 auto;}
+  .mcq .opts li.correct{border-color:var(--good); background:rgba(46,125,79,.08); color:var(--ink);}
+  .mcq .opts li.correct .k{color:var(--good);}
+
+  details.reveal{margin-top:2px;}
+  details.reveal summary{cursor:pointer; font-size:12.5px; font-weight:600; color:var(--accent); list-style:none; padding:4px 0;}
+  details.reveal summary::-webkit-details-marker{display:none;}
+  details.reveal summary::before{content:"Show answer ▸";}
+  details.reveal[open] summary::before{content:"Hide answer ▾";}
+  details.reveal .a{font-size:13.3px; color:var(--ink-2); border-top:1px solid var(--border); margin-top:7px; padding-top:9px;}
+
+  .prob{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:16px; box-shadow:var(--shadow);}
+  .prob .qnum{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent-2); font-weight:600;}
+  .prob .marks{float:right; font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); font-weight:600;}
+  .prob h3{font-size:15px; margin:4px 0 10px;}
+  .prob .stmt{font-size:13.8px; color:var(--ink-2); margin-bottom:10px;}
+  .formula, .work{background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:11px 15px; font-family:"IBM Plex Mono",monospace; font-size:12.8px; overflow-x:auto; margin:7px 0; line-height:1.7;}
+  .answer-line{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--accent); font-size:13.5px;}
+  .why{font-size:12.5px; color:var(--muted); margin-top:6px; font-style:italic;}
+
+  .partlabel{display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:2px 9px; border-radius:99px; background:rgba(var(--accent-rgb),.14); color:var(--accent); margin-bottom:14px;}
+  .partlabel.amber{background:rgba(var(--accent-2-rgb),.16); color:var(--accent-2);}
+
+  .footer{padding:28px 0; color:var(--muted); font-size:12px; border-top:1px solid var(--border); margin-top:20px;}
+</style>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Modeled on your actual 17.09.2025 quiz + 25.09.2025 mid-sem</div>
+    <h1>Predicted NLP Quiz — 20 Marks</h1>
+    <p>Five rounds, each a complete 20-mark paper: 10 marks FIB/MCQ + 10 marks solving. Tier 1 mirrors last year's quiz almost question-for-question (same techniques, new numbers). Tiers 2–3 raise the difficulty. Round 4 covers perplexity, a full TF-IDF vector, and Bernoulli Naive Bayes. Round 5 fills remaining gaps: FST inversion/projection, Chinese max-matching, a real NFA→DFA subset construction, and Good-Turing computed straight from raw counts. All numeric answers are fully worked — click to reveal.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="t1">Tier 1 — Exact-paper level</button>
+    <button class="tab-btn" data-tab="t2">Tier 2 — Medium</button>
+    <button class="tab-btn" data-tab="t3">Tier 3 — Tough</button>
+    <button class="tab-btn" data-tab="t4">Round 4 — Fresh set</button>
+    <button class="tab-btn" data-tab="t5">Round 5 — Gap-fillers</button>
+  </div>
+
+  <!-- ============ SHARED CORPUS NOTE ============ -->
+  <div class="corpus-block">
+    <span class="lbl">The "ML corpus" — reused across every language-model question below (Tiers 1–3), the same way your actual quiz reused one corpus for Q2/Q3/Q8</span>
+    S1: Machine learning is essentially the study of algorithms that learn patterns from data.<br>
+    S2: Machine learning is used everywhere around us today.<br>
+    S3: Machine learning is all about finding hidden structure in data.<br>
+    S4: Machine learning can also improve the accuracy of predictions.<br>
+    S5: Machine learning is the foundation of artificial intelligence.<br><br>
+    <span style="color:var(--muted);">Lowercased, tokenized on whitespace/punctuation. Useful pre-counted values: 5 sentences, 48 tokens total, <b>V = 32</b> unique word types, <b>36</b> unique bigram types. C(machine)=5, C(learning)=5, C(of)=3, C(machine,learning)=5, C(learning,is)=4, C(learning,can)=1.</span>
+  </div>
+
+  <!-- ================= TIER 1 ================= -->
+  <div class="tab-panel active" id="panel-t1">
+
+    <div class="section-head">
+      <span class="partlabel">Part A — 10 marks</span>
+      <h2>Fill-in-the-blank / MCQ</h2>
+    </div>
+
+    <div class="mcq"><span class="qnum">Q1</span><span class="marks">2</span><div class="qtext">FIB: The ______ of a corpus is the set of all distinct word types it contains, usually denoted V.</div>
+      <details class="reveal"><div class="a"><b>vocabulary</b> — V is the vocabulary size (type count), as distinct from N, the total token count.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q2</span><span class="marks">2</span><div class="qtext">MCQ: Which smoothing method redistributes probability based on how many different <em>contexts</em> a word has appeared in, rather than its raw frequency?</div>
+      <ul class="opts"><li><span class="k">A.</span>Laplace (add-1)</li><li><span class="k">B.</span>Good-Turing</li><li class="correct"><span class="k">C.</span>Kneser-Ney</li><li><span class="k">D.</span>Witten-Bell</li></ul>
+      <details class="reveal"><div class="a">Kneser-Ney's continuation probability P_CONTINUATION(w) is proportional to the number of distinct words preceding w — the "San Francisco vs. glasses" intuition.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q3</span><span class="marks">2</span><div class="qtext">FIB: In the Good-Turing formula c* = (c+1)·N<sub>c+1</sub>/N<sub>c</sub>, N<sub>c</sub> is defined as ______.</div>
+      <details class="reveal"><div class="a">the <b>frequency of frequency c</b> — the number of distinct N-grams that occur exactly c times in the training data.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q4</span><span class="marks">2</span><div class="qtext">MCQ: A DFA differs from an NFA in that:</div>
+      <ul class="opts"><li><span class="k">A.</span>It always has fewer states</li><li class="correct"><span class="k">B.</span>Each (state, input-symbol) pair has at most one outgoing transition</li><li><span class="k">C.</span>It cannot have more than one final state</li><li><span class="k">D.</span>It cannot recognize any regular language</li></ul>
+      <details class="reveal"><div class="a">That's the definition of determinism: no choice points. Every NFA has an equivalent DFA (subset construction), possibly with more states.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q5</span><span class="marks">2</span><div class="qtext">FIB: Add-1 smoothing is also commonly called ______ smoothing.</div>
+      <details class="reveal"><div class="a"><b>Laplace</b> smoothing.</div></details>
+    </div>
+
+    <div class="section-head">
+      <span class="partlabel amber">Part B — 10 marks</span>
+      <h2>Solving</h2>
+    </div>
+
+    <div class="prob"><span class="qnum">Q6</span><span class="marks">2 marks</span><h3>Regular expressions</h3>
+      <p class="stmt">(a) Write a regex accepting strings ending with '?' or '!', with total length between 3 and 6.<br>(b) Write a regex accepting both "flavour" and "flavor".</p>
+      <div class="formula">(a) ^.{2,5}[?!]$&nbsp;&nbsp;<span style="color:var(--muted);">— 1 mandatory closing char + 2 to 5 preceding chars = length 3–6</span><br>(b) flavou?r&nbsp;&nbsp;<span style="color:var(--muted);">— "?" makes the "u" optional, exactly like colou?r</span></div>
+    </div>
+
+    <div class="prob"><span class="qnum">Q7</span><span class="marks">2 marks</span><h3>Kneser-Ney bigram smoothing</h3>
+      <p class="stmt">Using the ML corpus, with d=0.75, find P<sub>KN</sub>(is | learning).</p>
+      <div class="work">
+        max(C(learning,is)−d,0)/C(learning) = max(4−0.75,0)/5 = 3.25/5 = 0.65<br>
+        λ(learning) = d × |{distinct continuations of "learning"}| / C(learning) = 0.75×2/5 = 0.30&nbsp;&nbsp;<span style="color:var(--muted);">(continuations: is, can)</span><br>
+        P_CONT(is) = |{distinct words preceding "is"}| / (unique bigram types) = 1/36 = 0.02778&nbsp;&nbsp;<span style="color:var(--muted);">(only "learning" ever precedes "is")</span>
+      </div>
+      <p class="answer-line">P_KN(is|learning) = 0.65 + 0.30 × 0.02778 = <b>0.6583</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q8</span><span class="marks">2 marks</span><h3>Unsmoothed bigram sentence probability</h3>
+      <p class="stmt">Using a mini-corpus &lt;s&gt; I am zorp &lt;/s&gt; / &lt;s&gt; zorp I am &lt;/s&gt; / &lt;s&gt; I do not like blue skies &lt;/s&gt;, find P(&lt;s&gt; I am zorp blue &lt;/s&gt;).</p>
+      <div class="work">
+        P(I|&lt;s&gt;)=2/3, P(am|I)=2/3, P(zorp|am)=1/2, P(blue|zorp)=0/2=0
+      </div>
+      <p class="answer-line">P(sentence) = 0 &nbsp;<span style="color:var(--muted);font-weight:400;">(one zero-count bigram — "zorp blue" never occurs — zeroes the whole product)</span></p>
+      <p class="why">This is exactly why smoothing exists — see Q9.</p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q9</span><span class="marks">2 marks</span><h3>Add-K smoothing, same sentence</h3>
+      <p class="stmt">Redo Q8 with add-K smoothing, K=0.2. Vocabulary V=9 (I, am, zorp, do, not, like, blue, skies, &lt;/s&gt;).</p>
+      <div class="work">
+        P(I|&lt;s&gt;)=(2+.2)/(3+.2×9)=2.2/4.8=0.4583<br>
+        P(am|I)=(2+.2)/(3+1.8)=2.2/4.8=0.4583<br>
+        P(zorp|am)=(1+.2)/(2+1.8)=1.2/3.8=0.3158<br>
+        P(blue|zorp)=(0+.2)/(2+1.8)=0.2/3.8=0.0526<br>
+        P(&lt;/s&gt;|blue)=(0+.2)/(1+1.8)=0.2/2.8=0.0714
+      </div>
+      <p class="answer-line">P(sentence) = 0.4583×0.4583×0.3158×0.0526×0.0714 ≈ <b>2.49 × 10⁻⁴</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q10</span><span class="marks">2 marks</span><h3>FST for the -ness suffix</h3>
+      <p class="stmt">Draw an FST that correctly recognizes the -ness suffix on regular adjectives (happy → happiness, kind → kindness).</p>
+      <div class="work">
+        State q0 --adj-root:adj-root--&gt; q1 --ε:^--&gt; q2 --n:n--&gt; q3 --e:e--&gt; q4 --s:s--&gt; q5 --s:s--&gt; q6 --ε:#--&gt; q7 (final)<br>
+        <span style="color:var(--muted);">Lexical tape: happy+ADJ+NESS &nbsp;→&nbsp; Intermediate: happy^ness# &nbsp;→&nbsp; Surface: happiness (only if a y→i spelling-rule transducer runs in parallel, same as the fox→foxes e-insertion machinery)</span>
+      </div>
+      <p class="why">Structurally identical to the -ly FST your actual quiz asked for — just swap the suffix arcs and add the y→i orthographic rule for roots ending in a consonant+y (happy→happi-).</p>
+    </div>
+  </div>
+
+  <!-- ================= TIER 2 ================= -->
+  <div class="tab-panel" id="panel-t2">
+
+    <div class="section-head">
+      <span class="partlabel">Part A — 10 marks</span>
+      <h2>Fill-in-the-blank / MCQ</h2>
+    </div>
+
+    <div class="mcq"><span class="qnum">Q1</span><span class="marks">2</span><div class="qtext">MCQ: In Katz backoff, the normalizing factor α exists so that:</div>
+      <ul class="opts"><li><span class="k">A.</span>Counts stay integers</li><li class="correct"><span class="k">B.</span>The probability distribution still sums to 1 after redistributing discounted mass</li><li><span class="k">C.</span>Computation is faster</li><li><span class="k">D.</span>Unigrams are ignored</li></ul>
+      <details class="reveal"><div class="a">Discounting frees up mass from the seen higher-order N-grams; α scales the lower-order backoff distribution so the total still sums to exactly 1.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q2</span><span class="marks">2</span><div class="qtext">FIB: P_CONTINUATION(w) in Kneser-Ney is proportional to the number of ______ that precede w.</div>
+      <details class="reveal"><div class="a"><b>distinct word types</b> (equivalently, distinct bigram contexts) — not raw token frequency.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q3</span><span class="marks">2</span><div class="qtext">MCQ: Which is NOT a valid regex shorthand character class?</div>
+      <ul class="opts"><li><span class="k">A.</span><code>\d</code></li><li><span class="k">B.</span><code>\w</code></li><li class="correct"><span class="k">C.</span><code>\p</code></li><li><span class="k">D.</span><code>\s</code></li></ul>
+      <details class="reveal"><div class="a"><code>\p</code> isn't a standard Perl/Python shorthand class (that's <code>\d</code>, <code>\D</code>, <code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q4</span><span class="marks">2</span><div class="qtext">FIB: In linear interpolation, the constraint on the λ weights is Σλᵢ = ______.</div>
+      <details class="reveal"><div class="a"><b>1</b> — otherwise the mixed estimate isn't a valid probability distribution.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q5</span><span class="marks">2</span><div class="qtext">MCQ: Zipf's Law states that a word's frequency is approximately proportional to:</div>
+      <ul class="opts"><li><span class="k">A.</span>its rank</li><li class="correct"><span class="k">B.</span>1 / its rank</li><li><span class="k">C.</span>its rank²</li><li><span class="k">D.</span>log(its rank)</li></ul>
+      <details class="reveal"><div class="a">freq ∝ 1/rank — an inverse power law, a straight line once you take logs of both sides.</div></details>
+    </div>
+
+    <div class="section-head">
+      <span class="partlabel amber">Part B — 10 marks</span>
+      <h2>Solving</h2>
+    </div>
+
+    <div class="prob"><span class="qnum">Q6</span><span class="marks">2 marks</span><h3>Regex, two constraints combined</h3>
+      <p class="stmt">Write a regex accepting strings that start with a digit, end with a letter, and are 5 to 9 characters long overall.</p>
+      <div class="formula">^[0-9].{3,7}[A-Za-z]$&nbsp;&nbsp;<span style="color:var(--muted);">— 1 digit + 1 letter fixed, remaining middle length ranges 3–7 → total length 5–9</span></div>
+    </div>
+
+    <div class="prob"><span class="qnum">Q7</span><span class="marks">2 marks</span><h3>Kneser-Ney with a zero-count bigram</h3>
+      <p class="stmt">Using the ML corpus, d=0.75, find P<sub>KN</sub>(intelligence | of). Note C(of, intelligence)=0.</p>
+      <div class="work">
+        max(0−0.75,0)/C(of) = 0/3 = 0&nbsp;&nbsp;<span style="color:var(--muted);">(unseen bigram → discounted term vanishes entirely)</span><br>
+        λ(of) = 0.75 × |{continuations of "of"}| / C(of) = 0.75×3/3 = 0.75&nbsp;&nbsp;<span style="color:var(--muted);">(of → algorithms / predictions / artificial)</span><br>
+        P_CONT(intelligence) = 1/36 = 0.02778&nbsp;&nbsp;<span style="color:var(--muted);">(only "artificial" precedes "intelligence")</span>
+      </div>
+      <p class="answer-line">P_KN(intelligence|of) = 0 + 0.75 × 0.02778 = <b>0.0208</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q8</span><span class="marks">2 marks</span><h3>Unsmoothed trigram probability</h3>
+      <p class="stmt">Using the ML corpus, find P(is | machine, learning).</p>
+      <div class="work">C(machine,learning,is)=4&nbsp;&nbsp;(all sentences except S4)<br>C(machine,learning)=5</div>
+      <p class="answer-line">P(is|machine,learning) = 4/5 = <b>0.8</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q9</span><span class="marks">2 marks</span><h3>Add-K trigram smoothing</h3>
+      <p class="stmt">Redo Q8 with add-K, K=0.5, V=32.</p>
+      <div class="work">(C(machine,learning,is)+K) / (C(machine,learning)+K·V) = (4+0.5)/(5+0.5×32) = 4.5/(5+16) = 4.5/21</div>
+      <p class="answer-line">P(is|machine,learning) = <b>0.2143</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q10</span><span class="marks">2 marks</span><h3>DFA construction</h3>
+      <p class="stmt">Draw a DFA over {a,b} that accepts exactly the strings containing the substring "aab".</p>
+      <div class="work">
+        Q={q0,q1,q2,q3(final)}, Σ={a,b}<br>
+        q0 --a--&gt; q1 --a--&gt; q2 --b--&gt; q3(final, absorbing on a,b)<br>
+        q1 --b--&gt; q0&nbsp;&nbsp;(fail back to start, saw a single a then b)<br>
+        q2 --a--&gt; q2&nbsp;&nbsp;(stay — still just seen a's, waiting for the b)<br>
+        q0 --b--&gt; q0
+      </div>
+      <p class="why">Classic substring-recognizer construction: states track "how much of the target string aab have I matched so far," with a final absorbing accept state once the full substring is seen.</p>
+    </div>
+  </div>
+
+  <!-- ================= TIER 3 ================= -->
+  <div class="tab-panel" id="panel-t3">
+
+    <div class="section-head">
+      <span class="partlabel">Part A — 10 marks</span>
+      <h2>Fill-in-the-blank / MCQ</h2>
+    </div>
+
+    <div class="mcq"><span class="qnum">Q1</span><span class="marks">2</span><div class="qtext">MCQ: Interpolated Kneser-Ney differs from backoff Kneser-Ney in that:</div>
+      <ul class="opts"><li><span class="k">A.</span>It uses a different discount value d</li><li class="correct"><span class="k">B.</span>It always mixes in the lower-order distribution, even when the higher-order count is nonzero</li><li><span class="k">C.</span>It doesn't use continuation counts</li><li><span class="k">D.</span>It only works for bigrams</li></ul>
+      <details class="reveal"><div class="a">Backoff consults the lower order only on a zero count; interpolation always blends every order (weighted by λ), which is why interpolated KN empirically outperforms its own backoff version.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q2</span><span class="marks">2</span><div class="qtext">FIB: If Katz backoff used raw (undiscounted) MLE probabilities at every level with no discounting at all, the resulting "distribution" would sum to a value ______ 1.</div>
+      <details class="reveal"><div class="a"><b>greater than</b> — without discounting, backed-off mass is added on top of an already-normalized higher-order distribution, double-counting probability.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q3</span><span class="marks">2</span><div class="qtext">MCQ: For an NFA with n states, the equivalent DFA produced by subset construction can have at most:</div>
+      <ul class="opts"><li><span class="k">A.</span>n states</li><li><span class="k">B.</span>2n states</li><li class="correct"><span class="k">C.</span>2ⁿ states</li><li><span class="k">D.</span>n² states</li></ul>
+      <details class="reveal"><div class="a">Each DFA state corresponds to a distinct <em>subset</em> of NFA states reachable together; there are 2ⁿ possible subsets of an n-element set.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q4</span><span class="marks">2</span><div class="qtext">FIB: In Byte-Pair Encoding, merging stops once the vocabulary ______ or a pre-set target vocabulary size is reached.</div>
+      <details class="reveal"><div class="a">stops changing <span style="color:var(--muted);">(no more useful/frequent pairs left to merge)</span></div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q5</span><span class="marks">2</span><div class="qtext">MCQ: Cross-entropy H(p,m) of a model m relative to the true distribution p satisfies:</div>
+      <ul class="opts"><li><span class="k">A.</span>H(p,m) &lt; H(p) always</li><li><span class="k">B.</span>H(p,m) = H(p) always</li><li class="correct"><span class="k">C.</span>H(p,m) ≥ H(p) always</li><li><span class="k">D.</span>No fixed relationship exists</li></ul>
+      <details class="reveal"><div class="a">Cross-entropy is always an upper bound on the true entropy — a better model tightens the bound but never crosses below the truth. This is exactly why lower perplexity (=2^cross-entropy) reliably means a better language model.</div></details>
+    </div>
+
+    <div class="section-head">
+      <span class="partlabel amber">Part B — 10 marks</span>
+      <h2>Solving</h2>
+    </div>
+
+    <div class="prob"><span class="qnum">Q6</span><span class="marks">2 marks</span><h3>Regex with alternation + anchors</h3>
+      <p class="stmt">Write a regex matching valid Indian mobile numbers: an optional "+91" prefix, followed by a digit 6–9, followed by exactly 9 more digits.</p>
+      <div class="formula">^(\+91)?[6-9]\d{9}$</div>
+    </div>
+
+    <div class="prob"><span class="qnum">Q7</span><span class="marks">2 marks</span><h3>Full recursive trigram Kneser-Ney</h3>
+      <p class="stmt">Using the ML corpus, d=0.75, find P<sub>KN</sub>(is | machine, learning) using the recursive trigram formula (reuse P<sub>KN</sub>(is|learning) from Tier 1, Q7 = 0.6583).</p>
+      <div class="work">
+        Higher-order term: max(C(machine,learning,is)−d,0)/C(machine,learning) = max(4−0.75,0)/5 = 3.25/5 = 0.65<br>
+        λ(machine,learning) = 0.75 × |{continuations of "machine learning"}| / C(machine,learning) = 0.75×2/5 = 0.30&nbsp;&nbsp;<span style="color:var(--muted);">(continuations: is, can)</span><br>
+        Recurse down one level: P_KN(is|learning) = 0.6583&nbsp;&nbsp;<span style="color:var(--muted);">(carried over from Tier 1)</span>
+      </div>
+      <p class="answer-line">P_KN(is|machine,learning) = 0.65 + 0.30 × 0.6583 = <b>0.8475</b></p>
+      <p class="why">This is the question type most likely to trip people up: you must know that trigram KN backs off to <em>bigram KN</em> (not straight to the unigram continuation), which itself backs off to the unigram continuation probability.</p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q8</span><span class="marks">2 marks</span><h3>Good-Turing, multi-step</h3>
+      <p class="stmt">Given frequency-of-frequencies N₁=8, N₂=4, N₃=2, N₄=1 (and c=4 is trusted as-is, per Katz's threshold rule). Find c*₁, c*₂, c*₃, total token count N, and P<sub>GT</sub>(unseen).</p>
+      <div class="work">
+        c*₁ = (1+1)·N₂/N₁ = 2×4/8 = <b>1.0</b><br>
+        c*₂ = (2+1)·N₃/N₂ = 3×2/4 = <b>1.5</b><br>
+        c*₃ = (3+1)·N₄/N₃ = 4×1/2 = <b>2.0</b><br>
+        N = Σ c·N_c = (1×8)+(2×4)+(3×2)+(4×1) = 8+8+6+4 = <b>26</b>
+      </div>
+      <p class="answer-line">P_GT(unseen) = N₁/N = 8/26 ≈ <b>0.3077</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q9</span><span class="marks">2 marks</span><h3>Naive Bayes text classification, with Laplace smoothing</h3>
+      <p class="stmt">Training data — Promo: "buy now get discount", "limited offer buy today". Inform: "meeting scheduled tomorrow", "report is ready". Classify "buy offer today" (V=13, add-1 smoothing).</p>
+      <div class="work">
+        Priors: P(Promo)=P(Inform)=0.5&nbsp;&nbsp;&nbsp;|Promo words|=8, |Inform words|=6<br><br>
+        P(buy|Promo)=(2+1)/(8+13)=3/21=.1429&nbsp; P(offer|Promo)=(1+1)/21=.0952&nbsp; P(today|Promo)=(1+1)/21=.0952<br>
+        score(Promo) = 0.5 × .1429×.0952×.0952 ≈ <b>6.48×10⁻⁴</b><br><br>
+        P(buy|Inform)=(0+1)/(6+13)=1/19=.0526&nbsp; P(offer|Inform)=1/19=.0526&nbsp; P(today|Inform)=1/19=.0526<br>
+        score(Inform) = 0.5 × .0526³ ≈ <b>7.29×10⁻⁵</b>
+      </div>
+      <p class="answer-line">score(Promo) &gt; score(Inform) → predict <b>Promo</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q10</span><span class="marks">2 marks</span><h3>BPE merge steps</h3>
+      <p class="stmt">Corpus (word: frequency): low(5), lower(2), newest(6), widest(3). Character-split each word and apply 3 rounds of BPE merges. List the merges in order.</p>
+      <div class="work">
+        Init: l-o-w, l-o-w-e-r, n-e-w-e-s-t, w-i-d-e-s-t<br><br>
+        Round 1: pair (e,s) occurs in newest(6) + widest(3) = 9 times — most frequent → merge "es"<br>
+        Round 2: pair (es,t) occurs in newest(6) + widest(3) = 9 times → merge "est"<br>
+        Round 3: pair (l,o) occurs in low(5) + lower(2) = 7 times (ties with (o,w), resolved by taking the first-listed) → merge "lo"
+      </div>
+      <p class="answer-line">Merge order: <b>es → est → lo</b> &nbsp;<span style="color:var(--muted);font-weight:400;">(vocabulary after round 3: l,o,w,e,r,n,s,t,i,d,es,est,lo)</span></p>
+      <p class="why">This is the canonical worked example from the original BPE-for-subword-tokenization paper (Sennrich et al., 2016) — a very safe bet for an exam illustration since it's the one almost every course slide deck reuses.</p>
+    </div>
+
+    <div class="prob" style="border-color:var(--accent-2);"><span class="qnum">Bonus</span><span class="marks">not in the 20</span><h3>Witten-Bell smoothing, formal (τ/γ) definition</h3>
+      <p class="stmt">Using the ML corpus, find P<sub>WB</sub>(is | learning) via the interpolated formula P_WB(wᵢ|h) = τ(wᵢ|h) + γ(h)·P_WB(wᵢ), where τ(wᵢ|h)=C(h,wᵢ)/[N₁₊(h•)+C(h)] and γ(h)=N₁₊(h•)/[N₁₊(h•)+C(h)]. Take the unigram base case as P_WB(is) ≈ C(is)/N.</p>
+      <div class="work">
+        N₁₊(learning•) = 2&nbsp;&nbsp;<span style="color:var(--muted);">(learning is followed only by "is" and "can")</span><br>
+        C(learning)=5, C(learning,is)=4, C(is)=4, N=48<br><br>
+        τ(is|learning) = 4/(2+5) = 4/7 ≈ 0.5714<br>
+        γ(learning) = 2/(2+5) = 2/7 ≈ 0.2857<br>
+        P_WB(is) ≈ 4/48 ≈ 0.0833
+      </div>
+      <p class="answer-line">P_WB(is|learning) = 0.5714 + 0.2857 × 0.0833 = <b>0.5952</b></p>
+      <p class="why">Added because you shared the formal Chen &amp; Goodman-style definition (N₁₊, γ, τ) after this quiz was built — this is the version to use if a question just says "Witten-Bell smoothing" without further hints. See the Notes Companion's smoothing section for the full τ/γ derivation and how it reconciles with the simpler "+1" shortcut some lecture notes use.</p>
+    </div>
+  </div>
+
+  <!-- ================= TIER 4 ================= -->
+  <div class="tab-panel" id="panel-t4">
+
+    <div class="corpus-block">
+      <span class="lbl">The "Cats &amp; Dogs corpus" — used only in this round, in the same toy-sentence style as your mid-sem's "The boy hugs the cat" dataset</span>
+      S1: The cat sat on the mat.<br>
+      S2: The cat chased the mouse.<br>
+      S3: The dog barked at the cat.<br>
+      S4: The dog and the cat played together.<br>
+      S5: A cat and a dog became friends.<br><br>
+      <span style="color:var(--muted);">Lowercased, tokenized on whitespace/punctuation. 5 sentences, 31 tokens, <b>V = 16</b> unique types, <b>22</b> unique bigram types. C(the)=8, C(cat)=5, C(dog)=3, C(the,cat)=4, N₁₊(the•)=4 {cat,mat,mouse,dog}, N₁₊(dog•)=3 {barked,and,became}.</span>
+    </div>
+
+    <div class="section-head">
+      <span class="partlabel">Part A — 10 marks</span>
+      <h2>Fill-in-the-blank / MCQ</h2>
+    </div>
+
+    <div class="mcq"><span class="qnum">Q1</span><span class="marks">2</span><div class="qtext">FIB: Perplexity PP(W) is mathematically equal to 2 raised to the power of the ______ of the test set.</div>
+      <details class="reveal"><div class="a"><b>cross-entropy</b> (H(W)) — PP(W) = 2^H(W), which is why a lower cross-entropy model always has lower perplexity.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q2</span><span class="marks">2</span><div class="qtext">MCQ: Which feature representation records only presence/absence of a word, not its frequency?</div>
+      <ul class="opts"><li><span class="k">A.</span>TF-IDF vector</li><li><span class="k">B.</span>Raw count vector</li><li class="correct"><span class="k">C.</span>Binary (Bernoulli) features</li><li><span class="k">D.</span>One-hot word embedding</li></ul>
+      <details class="reveal"><div class="a">Bernoulli/binary features store 1 if the word (or property, like "contains a URL") appears at all, 0 otherwise — no count information.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q3</span><span class="marks">2</span><div class="qtext">FIB: Before any merges happen, BPE's initial vocabulary consists of every unique ______ in the corpus.</div>
+      <details class="reveal"><div class="a"><b>character</b> — merges then progressively build up multi-character subword units from there.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q4</span><span class="marks">2</span><div class="qtext">MCQ: The Porter stemmer differs from a lemmatizer in that it:</div>
+      <ul class="opts"><li><span class="k">A.</span>Uses a dictionary lookup to find the correct root</li><li class="correct"><span class="k">B.</span>Strips affixes via cascaded rewrite rules, without checking the result is a real word</li><li><span class="k">C.</span>Requires POS tags as input</li><li><span class="k">D.</span>Only works on irregular verbs</li></ul>
+      <details class="reveal"><div class="a">This is why the Porter stemmer makes errors like organization→organ — it has no lexicon, just rule cascades (Ch. 3 §3.8 of the textbook).</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q5</span><span class="marks">2</span><div class="qtext">FIB: A finite-state transducer (FST) differs from a finite-state automaton (FSA) in that it reads/writes ______ tapes instead of one.</div>
+      <details class="reveal"><div class="a"><b>two</b> — an input tape and an output tape, which is what lets it define a relation between two languages instead of just accepting one.</div></details>
+    </div>
+
+    <div class="section-head">
+      <span class="partlabel amber">Part B — 10 marks</span>
+      <h2>Solving</h2>
+    </div>
+
+    <div class="prob"><span class="qnum">Q6</span><span class="marks">2 marks</span><h3>Regex — whole-word match</h3>
+      <p class="stmt">Write a regex that matches "cat" as a whole word only — not as part of "category" or "concatenate".</p>
+      <div class="formula">\bcat\b&nbsp;&nbsp;<span style="color:var(--muted);">— word-boundary anchors on both sides prevent matching inside a longer word</span></div>
+    </div>
+
+    <div class="prob"><span class="qnum">Q7</span><span class="marks">2 marks</span><h3>Kneser-Ney, fresh corpus</h3>
+      <p class="stmt">Using the Cats &amp; Dogs corpus, d=0.75, find P<sub>KN</sub>(cat | the).</p>
+      <div class="work">
+        max(C(the,cat)−d,0)/C(the) = max(4−0.75,0)/8 = 3.25/8 = 0.40625<br>
+        λ(the) = d × N₁₊(the•)/C(the) = 0.75×4/8 = 0.375<br>
+        P_CONT(cat) = |{distinct words preceding "cat"}| / 22 = 2/22 ≈ 0.0909&nbsp;&nbsp;<span style="color:var(--muted);">(preceded only by "the" and "a")</span>
+      </div>
+      <p class="answer-line">P_KN(cat|the) = 0.40625 + 0.375 × 0.0909 ≈ <b>0.4403</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q8</span><span class="marks">2 marks</span><h3>Perplexity of a short sentence</h3>
+      <p class="stmt">A bigram model gives P(the|&lt;s&gt;)=0.4, P(cat|the)=0.5, P(sat|cat)=0.3, P(&lt;/s&gt;|sat)=0.25. Find the perplexity of "&lt;s&gt; the cat sat &lt;/s&gt;" (N=4, counting &lt;/s&gt;).</p>
+      <div class="work">
+        P(W) = 0.4×0.5×0.3×0.25 = 0.015<br>
+        PP(W) = P(W)<sup>−1/N</sup> = 0.015<sup>−1/4</sup><br>
+        ln(0.015) = −4.1997 → −4.1997/4 = −1.0499 → PP = e<sup>1.0499</sup>
+      </div>
+      <p class="answer-line">PP(W) ≈ <b>2.86</b></p>
+      <p class="why">A perplexity near 2.86 over 4 tokens means the model was, on average, about as uncertain as choosing among ~3 equally likely words at each step.</p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q9</span><span class="marks">2 marks</span><h3>Full TF-IDF vector (two terms)</h3>
+      <p class="stmt">Treating each of the 5 sentences as a document, find the TF-IDF vector (natural log, unigrams) for the query "cat dog", evaluated on Document 3 ("the dog barked at the cat", 6 tokens).</p>
+      <div class="work">
+        TF(cat,D3)=1/6, TF(dog,D3)=1/6<br>
+        df(cat)=5 (appears in all 5 sentences) → IDF(cat)=ln(5/5)=ln(1)=0<br>
+        df(dog)=3 (S3,S4,S5) → IDF(dog)=ln(5/3)=0.5108
+      </div>
+      <p class="answer-line">TF-IDF(cat,D3) = 0&nbsp;&nbsp;&nbsp; TF-IDF(dog,D3) = (1/6)×0.5108 ≈ <b>0.0851</b></p>
+      <p class="why">"cat" gets exactly zero weight because it appears in <em>every</em> document — TF-IDF is correctly telling you it carries no discriminating information here, the same lesson as Zipf's law separating stopwords from informative words.</p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q10</span><span class="marks">2 marks</span><h3>Bernoulli Naive Bayes with binary features</h3>
+      <p class="stmt">Training data — Promo: "Buy 2 get 1 free!!!" (Number✓, URL✗, Excl✓), "Visit http://shop.com now!!!" (Number✗, URL✓, Excl✓). Inform: "Meeting at 3pm today." (Number✓, URL✗, Excl✗), "Report ready, check it." (Number✗, URL✗, Excl✗). Using add-1 Laplace smoothing on the three binary features, classify "Get 50% off now!!!" (Number✓, URL✗, Excl✓).</p>
+      <div class="work">
+        Priors: P(Promo)=P(Inform)=0.5&nbsp;&nbsp;(2 docs each)<br><br>
+        P(Num=1|Promo)=(1+1)/(2+2)=0.5&nbsp; P(URL=1|Promo)=(1+1)/4=0.5&nbsp; P(Excl=1|Promo)=(2+1)/4=0.75<br>
+        P(Num=1|Inform)=(1+1)/4=0.5&nbsp; P(URL=1|Inform)=(0+1)/4=0.25&nbsp; P(Excl=1|Inform)=(0+1)/4=0.25<br><br>
+        score(Promo) = 0.5 × 0.5 × (1−0.5) × 0.75 = 0.5×0.5×0.5×0.75 = 0.09375<br>
+        score(Inform) = 0.5 × 0.5 × (1−0.25) × 0.25 = 0.5×0.5×0.75×0.25 = 0.046875
+      </div>
+      <p class="answer-line">score(Promo) &gt; score(Inform) → predict <b>Promo</b></p>
+      <p class="why">Same feature-engineering hint as your mid-sem Q3 ("use binary/frequency-based features for presence of URLs, Numbers, and Punctuations") — this is that exact recipe applied end-to-end.</p>
+    </div>
+  </div>
+
+  <!-- ================= TIER 5 ================= -->
+  <div class="tab-panel" id="panel-t5">
+
+    <div class="corpus-block">
+      <span class="lbl">The "Weather corpus" — used only in this round</span>
+      S1: It is raining today.<br>
+      S2: It is sunny and warm today.<br>
+      S3: It was raining yesterday too.<br>
+      S4: The weather is nice and sunny.<br>
+      S5: It is cold and windy today.<br><br>
+      <span style="color:var(--muted);">Lowercased, tokenized on whitespace/punctuation. 5 sentences, 27 tokens, <b>V = 15</b> unique types, <b>20</b> unique bigram types. C(it)=4, C(is)=4, C(and)=3, C(it,is)=3, N₁₊(it•)=2 {is,was}, N₁₊(and•)=3 {warm,sunny,windy}.</span>
+    </div>
+
+    <div class="section-head">
+      <span class="partlabel">Part A — 10 marks</span>
+      <h2>Fill-in-the-blank / MCQ</h2>
+    </div>
+
+    <div class="mcq"><span class="qnum">Q1</span><span class="marks">2</span><div class="qtext">MCQ: The FST closure property that lets you turn a parser into a generator for free, just by swapping which tape is "input," is called:</div>
+      <ul class="opts"><li><span class="k">A.</span>Composition</li><li><span class="k">B.</span>Projection</li><li class="correct"><span class="k">C.</span>Inversion</li><li><span class="k">D.</span>Intersection</li></ul>
+      <details class="reveal"><div class="a">Inversion (T⁻¹) swaps the input and output alphabets of a transducer. Composition (T₁∘T₂) chains two transducers in series instead.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q2</span><span class="marks">2</span><div class="qtext">FIB: The ______ of an FST extracts just one of its two tapes (upper or lower), turning it back into a plain FSA.</div>
+      <details class="reveal"><div class="a"><b>projection</b> — e.g. projecting an FST morphological parser onto its lower/surface tape gives you a plain word-recognizer FSA, useful for spell-checking (Ch. 3 §3.10).</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q3</span><span class="marks">2</span><div class="qtext">MCQ: In the Chinese word-segmentation "maximum matching" (maxmatch) algorithm, at each step the algorithm:</div>
+      <ul class="opts"><li><span class="k">A.</span>Picks the shortest dictionary word matching the input at the current position</li><li class="correct"><span class="k">B.</span>Picks the longest dictionary word matching the input at the current position</li><li><span class="k">C.</span>Always advances exactly one character regardless of dictionary matches</li><li><span class="k">D.</span>Requires POS tags before it can run</li></ul>
+      <details class="reveal"><div class="a">It's a greedy algorithm: take the longest dictionary match starting at the current pointer, advance past it, repeat. It works reasonably well for Chinese (short average word length) but fails badly on languages with long words — Palmer's "thetabledownthere" → theta/bled/own/there English analogy in Ch. 3 §3.9.1 shows exactly why.</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q4</span><span class="marks">2</span><div class="qtext">FIB: Two automata run in series, with the output of the first feeding directly into the input of the second, are said to form a ______.</div>
+      <details class="reveal"><div class="a"><b>cascade</b> — e.g. the lexicon FST feeding into the spelling-rule FSTs in morphological parsing (Ch. 3 §3.7).</div></details>
+    </div>
+    <div class="mcq"><span class="qnum">Q5</span><span class="marks">2</span><div class="qtext">MCQ: Zipf's Law is usually written log(freq) = log(a) − r·log(b). This form is useful because:</div>
+      <ul class="opts"><li><span class="k">A.</span>It's linear in raw rank and raw frequency</li><li class="correct"><span class="k">B.</span>It's linear only after taking logs of both rank and frequency — making the exponent fittable by ordinary linear regression</li><li><span class="k">C.</span>It only holds for bigrams, never unigrams</li><li><span class="k">D.</span>It proves stopwords don't exist</li></ul>
+      <details class="reveal"><div class="a">freq = a·b⁻ʳ is a power law, curved on raw axes; taking logs of both sides turns it into a straight line, which is exactly what makes fitting (a,b) a simple least-squares regression problem.</div></details>
+    </div>
+
+    <div class="section-head">
+      <span class="partlabel amber">Part B — 10 marks</span>
+      <h2>Solving</h2>
+    </div>
+
+    <div class="prob"><span class="qnum">Q6</span><span class="marks">2 marks</span><h3>Regex substitution with a backreference</h3>
+      <p class="stmt">Write a substitution pattern that collapses any immediately-repeated word (e.g. "the the", "is is") down to a single occurrence.</p>
+      <div class="formula">s/\b(\w+)\s+\1\b/\1/&nbsp;&nbsp;<span style="color:var(--muted);">— \1 refers back to whatever the first group matched, forcing the second word to be identical to the first</span></div>
+    </div>
+
+    <div class="prob"><span class="qnum">Q7</span><span class="marks">2 marks</span><h3>Kneser-Ney, weather corpus</h3>
+      <p class="stmt">Find P<sub>KN</sub>(sunny | and), d=0.75.</p>
+      <div class="work">
+        max(C(and,sunny)−d,0)/C(and) = max(1−0.75,0)/3 = 0.25/3 ≈ 0.0833<br>
+        λ(and) = d × N₁₊(and•)/C(and) = 0.75×3/3 = 0.75<br>
+        P_CONT(sunny) = |{words preceding "sunny"}| / 20 = 2/20 = 0.10&nbsp;&nbsp;<span style="color:var(--muted);">(preceded by "is" and "and")</span>
+      </div>
+      <p class="answer-line">P_KN(sunny|and) = 0.0833 + 0.75 × 0.10 ≈ <b>0.1583</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q8</span><span class="marks">2 marks</span><h3>Witten-Bell (formal τ/γ), weather corpus</h3>
+      <p class="stmt">Find P<sub>WB</sub>(is | it), taking P_WB(is) ≈ C(is)/N as the base case.</p>
+      <div class="work">
+        τ(is|it) = C(it,is)/[N₁₊(it•)+C(it)] = 3/(2+4) = 0.5<br>
+        γ(it) = N₁₊(it•)/(2+4) = 2/6 ≈ 0.3333<br>
+        P_WB(is) ≈ C(is)/N = 4/27 ≈ 0.1481
+      </div>
+      <p class="answer-line">P_WB(is|it) = 0.5 + 0.3333 × 0.1481 ≈ <b>0.5494</b></p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q9</span><span class="marks">2 marks</span><h3>Good-Turing, computed from raw unigram counts (not given)</h3>
+      <p class="stmt">Using the weather corpus's own unigram counts — it=4, is=4, raining=2, today=3, sunny=2, and=3, and nine words appearing exactly once (warm, was, yesterday, too, the, weather, nice, cold, windy) — find P<sub>GT</sub>(unseen word) for the unigram model.</p>
+      <div class="work">N₁ = 9 (the nine singleton words) &nbsp;&nbsp; N = 27 (total tokens)</div>
+      <p class="answer-line">P_GT(unseen) = N₁/N = 9/27 = <b>1/3 ≈ 0.3333</b></p>
+      <p class="why">Unlike the earlier Good-Turing questions (which handed you N₁, N₂, N₃ directly), here you first had to derive the frequency-of-frequencies table yourself from raw counts — the step your actual quiz's Q9 also required.</p>
+    </div>
+
+    <div class="prob"><span class="qnum">Q10</span><span class="marks">2 marks</span><h3>NFA → DFA, full subset construction</h3>
+      <p class="stmt">NFA: states {q0,q1,q2}, Σ={a,b}, q2 is final. δ(q0,a)={q0,q1}, δ(q1,b)={q2}; all other (state,symbol) pairs are undefined. Convert to an equivalent DFA using subset construction — list every reachable DFA state.</p>
+      <div class="work">
+        Start: {q0}<br>
+        {q0} --a--&gt; δ(q0,a) = {q0,q1} &nbsp;→ new state A<br>
+        {q0} --b--&gt; ∅ &nbsp;(no defined transition → trap state)<br>
+        A={q0,q1} --a--&gt; δ(q0,a)∪δ(q1,a) = {q0,q1}∪∅ = {q0,q1} = A &nbsp;(self-loop)<br>
+        A --b--&gt; δ(q0,b)∪δ(q1,b) = ∅∪{q2} = {q2} &nbsp;→ new state B (final, since q2∈F)<br>
+        B={q2} --a,b--&gt; ∅<br>
+        ∅ --a,b--&gt; ∅ &nbsp;(trap, absorbing)
+      </div>
+      <p class="answer-line">Reachable DFA states: <b>{q0}, {q0,q1}, {q2} (final), ∅ (trap)</b> — 4 states total</p>
+      <p class="why">The textbook bound is "at most 2ⁿ states" (here, at most 2³=8) — but only 4 are actually reachable, which is the normal case: the bound is rarely tight in practice.</p>
+    </div>
+  </div>
+
+  <div class="footer">Predicted, not official. Built from your actual 17.09.2025 quiz and 25.09.2025 mid-sem paper — same techniques, same 2-marks-per-question granularity, fresh numbers. If your professor's exact Katz-backoff/Good-Turing convention differs slightly from what's shown (e.g. a different discount-averaging rule for zero-count bins), the <em>method</em> here is still the one to apply — just plug in whatever variant was taught in your specific lecture.</div>
+</div>
+
+<script>
+(function(){
+  var buttons = document.querySelectorAll('.tab-btn');
+  var panels = { t1: document.getElementById('panel-t1'), t2: document.getElementById('panel-t2'), t3: document.getElementById('panel-t3'), t4: document.getElementById('panel-t4'), t5: document.getElementById('panel-t5') };
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      Object.keys(panels).forEach(function(k){ panels[k].classList.remove('active'); });
+      panels[btn.getAttribute('data-tab')].classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+})();
+</script>

@@ -1,0 +1,97 @@
+{
+  "k": 0.3,
+  "vocab_size": 222199,
+  "raw_train_types": 541732,
+  "train_tokens": 16200343,
+  "n_train_sentences": 998000,
+  "n_dev_sentences": 1000,
+  "n_test_sentences": 1000,
+  "dev_oov_rate": 0.028610178248514594,
+  "test_oov_rate": 0.030999245593580686,
+  "perplexity": {
+    "unigram": {
+      "order": 1,
+      "add_k_dev_perplexity": 2605.635992258165,
+      "add_k_test_perplexity": 2422.627470064268,
+      "laplace_dev_perplexity": 2610.9282843308574,
+      "laplace_test_perplexity": 2429.2756198443626,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 222199
+    },
+    "bigram": {
+      "order": 2,
+      "add_k_dev_perplexity": 2976.9408841010945,
+      "add_k_test_perplexity": 2725.8814059277647,
+      "laplace_dev_perplexity": 5359.844568926861,
+      "laplace_test_perplexity": 4896.376978213988,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 4789360
+    },
+    "trigram": {
+      "order": 3,
+      "add_k_dev_perplexity": 25575.86274828498,
+      "add_k_test_perplexity": 23594.458966266993,
+      "laplace_dev_perplexity": 37653.82865923288,
+      "laplace_test_perplexity": 34912.745735788034,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 9953519
+    },
+    "quadrigram": {
+      "order": 4,
+      "add_k_dev_perplexity": 70423.64830376892,
+      "add_k_test_perplexity": 66251.17603384984,
+      "laplace_dev_perplexity": 87766.18835576792,
+      "laplace_test_perplexity": 83181.81670013329,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 12410639
+    }
+  },
+  "trigram_examples": [
+    {
+      "context": [
+        "એક",
+        "રિપોર્ટ"
+      ],
+      "top_next_words": [
+        "અનુસાર",
+        "મુજબ",
+        "પ્રમાણે",
+        "તૈયાર",
+        "રજૂ"
+      ]
+    },
+    {
+      "context": [
+        "આદિલના",
+        "પરિવારની"
+      ],
+      "top_next_words": []
+    },
+    {
+      "context": [
+        "આજે",
+        "સ્થિતિ"
+      ],
+      "top_next_words": [
+        "એવી",
+        "એ",
+        "</s>",
+        "સાવ",
+        "બદલાઈ"
+      ]
+    },
+    {
+      "context": [
+        "મનપા",
+        "દ્વારા"
+      ],
+      "top_next_words": [
+        "કરવામાં",
+        "નક્કી",
+        "પણ",
+        "જાહેર",
+        "શહેરમાં"
+      ]
+    }
+  ]
+}

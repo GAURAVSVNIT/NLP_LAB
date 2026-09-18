@@ -1,0 +1,660 @@
+<title>N-grams Practice Pack</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f6f4ee; --surface:#ffffff; --surface-2:#eee9dc; --border:#ddd6c4;
+    --ink:#1b2422; --ink-2:#4a5551; --muted:#7c8783;
+    --accent:#00897b; --accent-rgb:0,137,123;
+    --accent-2:#d9661c; --accent-2-rgb:217,102,28;
+    --accent-3:#7a5fb0; --accent-3-rgb:122,95,176;
+    --good:#2e7d4f; --bad:#b3402f;
+    --shadow: 0 1px 2px rgba(20,20,16,.04), 0 6px 20px rgba(20,20,16,.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121917; --surface:#182220; --surface-2:#1e2b28; --border:#2b3a36;
+      --ink:#eef2ef; --ink-2:#b9c6c1; --muted:#82918c;
+      --accent:#39b3a4; --accent-rgb:57,179,164;
+      --accent-2:#e28a52; --accent-2-rgb:226,138,82;
+      --accent-3:#a08bd0; --accent-3-rgb:160,139,208;
+      --good:#5fbf86; --bad:#e0715c;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121917; --surface:#182220; --surface-2:#1e2b28; --border:#2b3a36;
+    --ink:#eef2ef; --ink-2:#b9c6c1; --muted:#82918c;
+    --accent:#39b3a4; --accent-rgb:57,179,164;
+    --accent-2:#e28a52; --accent-2-rgb:226,138,82;
+    --accent-3:#a08bd0; --accent-3-rgb:160,139,208;
+    --good:#5fbf86; --bad:#e0715c;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15.5px; line-height:1.6;}
+  h1,h2,h3{font-family:"Newsreader",Georgia,serif; text-wrap:balance; font-weight:600; color:var(--ink);}
+  code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+  em{font-style:italic;}
+  .wrap{max-width:880px; margin:0 auto; padding:0 clamp(18px,4vw,32px) 90px;}
+
+  .hero{padding:40px 0 26px; border-bottom:1px solid var(--border); margin-bottom:8px;}
+  .eyebrow{text-transform:uppercase; letter-spacing:.11em; font-size:11.5px; font-weight:600; color:var(--accent);}
+  .hero h1{font-size:clamp(28px,4vw,38px); margin:8px 0 10px;}
+  .hero p{color:var(--ink-2); font-size:15px; max-width:640px;}
+
+  /* tab nav */
+  .tabs{position:sticky; top:0; z-index:20; background:var(--bg); display:flex; gap:6px; padding:14px 0; border-bottom:1px solid var(--border); margin-bottom:30px; overflow-x:auto;}
+  .tab-btn{
+    font-family:"IBM Plex Sans",sans-serif; font-size:13.5px; font-weight:600; color:var(--ink-2);
+    background:var(--surface); border:1px solid var(--border); padding:8px 16px; border-radius:99px;
+    cursor:pointer; white-space:nowrap; transition:.12s;
+  }
+  .tab-btn.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .section-head{margin:34px 0 18px;}
+  .section-head:first-child{margin-top:0;}
+  .section-head h2{font-size:22px; margin:4px 0 6px;}
+  .section-head p{color:var(--ink-2); font-size:14px; max-width:640px;}
+
+  /* MCQ cards */
+  .mcq{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:14px; box-shadow:var(--shadow);}
+  .mcq .qnum{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--accent); font-weight:600; margin-bottom:6px; display:block;}
+  .mcq .qtext{font-size:15px; font-weight:500; margin-bottom:12px; color:var(--ink);}
+  .mcq .opts{list-style:none; margin:0 0 12px; padding:0; display:grid; gap:7px;}
+  .mcq .opts li{
+    border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13.8px; color:var(--ink-2);
+    display:flex; gap:9px; align-items:flex-start;
+  }
+  .mcq .opts li .k{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--muted); flex:0 0 auto;}
+  .mcq .opts li.correct{border-color:var(--good); background:rgba(46,125,79,.08); color:var(--ink);}
+  .mcq .opts li.correct .k{color:var(--good);}
+  details.reveal{margin-top:4px;}
+  details.reveal summary{
+    cursor:pointer; font-size:12.8px; font-weight:600; color:var(--accent); list-style:none; padding:4px 0;
+  }
+  details.reveal summary::-webkit-details-marker{display:none;}
+  details.reveal summary::before{content:"Show answer & explanation ▸";}
+  details.reveal[open] summary::before{content:"Hide explanation ▾";}
+  details.reveal .expl{
+    font-size:13.4px; color:var(--ink-2); border-top:1px solid var(--border); margin-top:8px; padding-top:10px;
+  }
+  .badge{display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    padding:2px 8px; border-radius:99px; margin-right:6px;}
+  .badge.hard{background:rgba(var(--accent-2-rgb),.16); color:var(--accent-2);}
+  .badge.concept{background:rgba(var(--accent-3-rgb),.16); color:var(--accent-3);}
+  .badge.numeric{background:rgba(var(--accent-rgb),.16); color:var(--accent);}
+
+  /* exercise / numerical blocks */
+  .prob{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px; margin-bottom:18px; box-shadow:var(--shadow);}
+  .prob h3{font-size:16px; margin:2px 0 10px;}
+  .prob .stmt{font-size:14px; color:var(--ink-2); margin-bottom:12px;}
+  .prob .stmt b{color:var(--ink);}
+  .formula, .work{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:12px 16px;
+    font-family:"IBM Plex Mono",monospace; font-size:13.3px; overflow-x:auto; margin:8px 0; line-height:1.75;
+  }
+  .work .step{display:block;}
+  .answer-line{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--accent); font-size:14px;}
+  .why{font-size:13px; color:var(--muted); margin-top:8px; font-style:italic;}
+
+  table.mini{border-collapse:collapse; width:100%; font-family:"IBM Plex Mono",monospace; font-size:13px; margin:10px 0;}
+  table.mini th, table.mini td{padding:7px 12px; border:1px solid var(--border); text-align:center;}
+  table.mini th{background:var(--surface-2); font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:11.5px;}
+
+  .footer{padding:30px 0; color:var(--muted); font-size:12px; border-top:1px solid var(--border); margin-top:20px;}
+</style>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Companion to the N-grams Field Guide</div>
+    <h1>N-grams Practice Pack</h1>
+    <p>Twenty exam-style objective questions, full worked solutions for all ten end-of-chapter exercises, and nine numerical problems in the same style as the book's own "left as an exercise for the reader" calculations. Click any question to reveal its answer.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="mcq">Objective Questions (20)</button>
+    <button class="tab-btn" data-tab="exercises">Exercise Solutions (4.1–4.10)</button>
+    <button class="tab-btn" data-tab="numericals">Numerical Problems (9)</button>
+  </div>
+
+  <!-- =================== MCQ TAB =================== -->
+  <div class="tab-panel active" id="panel-mcq">
+    <div class="section-head">
+      <h2>Tough objective questions</h2>
+      <p>Written at exam difficulty — several turn on a single word in the definition (e.g. "backoff" vs "interpolation", "type" vs "token"). Read every option before locking in an answer.</p>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q1</span><span class="badge concept">Concept</span>
+      <div class="qtext">A bigram model approximates P(wₙ | w₁…wₙ₋₁) as P(wₙ | wₙ₋₁). This approximation is formally called:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> The chain rule</li>
+        <li class="correct"><span class="k">B.</span> The Markov assumption</li>
+        <li><span class="k">C.</span> Maximum Likelihood Estimation</li>
+        <li><span class="k">D.</span> The independence assumption</li>
+      </ul>
+      <details class="reveal"><div class="expl">The chain rule (A) is the exact decomposition that gets approximated. MLE (C) is how you estimate probabilities from counts, not the approximation itself. "Independence assumption" (D) is a trap — the words are NOT assumed independent; wₙ still depends on wₙ₋₁. The Markov assumption is specifically "predict the future from a limited, not infinite, history."</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q2</span><span class="badge hard">Tricky</span>
+      <div class="qtext">In the sentence "They picnicked by the pool, then lay back on the grass and looked at the stars." (punctuation excluded), what are the token and type counts respectively?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> 14 tokens, 16 types</li>
+        <li class="correct"><span class="k">B.</span> 16 tokens, 14 types</li>
+        <li><span class="k">C.</span> 16 tokens, 16 types</li>
+        <li><span class="k">D.</span> 14 tokens, 14 types</li>
+      </ul>
+      <details class="reveal"><div class="expl">Tokens = total running words = 16. Types = distinct words = 14, since "the" occurs twice ("the pool", "the grass"/"the stars" — "the" appears three times actually, and "at"/"and" are each single) — the book gives this exact sentence with the answer 16 tokens / 14 types. Tokens ≥ types always, so any option with types &gt; tokens (A) is impossible on its face.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q3</span><span class="badge numeric">Numeric reasoning</span>
+      <div class="qtext">A word occurs 400 times in a 1,000,000-word training corpus. Under Maximum Likelihood Estimation, which statement about P(word) = 0.0004 is most accurate?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> It is the true probability of the word in all of English</li>
+        <li class="correct"><span class="k">B.</span> It is the value that makes the observed training data most probable, not necessarily the best estimate for other corpora</li>
+        <li><span class="k">C.</span> It must be smoothed before it can be used at all</li>
+        <li><span class="k">D.</span> It is only valid if the corpus is balanced across genres</li>
+      </ul>
+      <details class="reveal"><div class="expl">This is the book's own "Chinese" example. MLE, by definition, maximizes P(training data | model) — it says nothing about correctness in a different corpus/genre. (C) is false: unsmoothed MLE is usable, just fragile at zero/low counts. (D) confuses a design recommendation (use matched-genre training data) with a mathematical requirement.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q4</span><span class="badge hard">Tricky</span>
+      <div class="qtext">Why does the bigram grammar in the mini-corpus example need an explicit end token &lt;/s&gt; (not just a start token &lt;s&gt;)?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> To make counting symmetric for readability only</li>
+        <li class="correct"><span class="k">B.</span> Without it, probabilities for all sentences of a given length would sum to 1, making the whole language's probability infinite</li>
+        <li><span class="k">C.</span> &lt;/s&gt; is required so P(wₙ|wₙ₋₁) can be computed at all</li>
+        <li><span class="k">D.</span> It prevents zero-probability bigrams</li>
+      </ul>
+      <details class="reveal"><div class="expl">This is Chen &amp; Goodman's (1998) point, quoted directly in the chapter footnote. (C) is wrong — bigram probabilities are computable without any boundary tokens. (D) is unrelated to smoothing/zero counts.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q5</span><span class="badge concept">Concept</span>
+      <div class="qtext">A "held-out" set differs from a "development test set" mainly in that:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> They are the same thing under different names</li>
+        <li class="correct"><span class="k">B.</span> A held-out set is used to tune model parameters like interpolation λs; a devset is used to check performance during iterative development before the final untouched test set</li>
+        <li><span class="k">C.</span> A held-out set always comes from a different genre</li>
+        <li><span class="k">D.</span> A devset is only used once, while a held-out set is reused indefinitely</li>
+      </ul>
+      <details class="reveal"><div class="expl">The chapter defines held-out data as extra data used to set parameters other than the raw N-gram counts (e.g., λ weights via EM). A devset exists because repeatedly evaluating on one "test" set implicitly tunes to it, so a fresh, truly-unseen final test set is still needed. They're related but distinct.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q6</span><span class="badge numeric">Numeric reasoning</span>
+      <div class="qtext">If a bigram language model assigns probability zero to one bigram in a test sentence, what happens to that sentence's perplexity?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> It becomes exactly 1</li>
+        <li><span class="k">B.</span> It becomes negative</li>
+        <li class="correct"><span class="k">C.</span> It becomes infinite (undefined)</li>
+        <li><span class="k">D.</span> It is unaffected, since perplexity only looks at unigrams</li>
+      </ul>
+      <details class="reveal"><div class="expl">PP(W) = P(W)<sup>&minus;1/N</sup>. If P(W)=0, this is 1/0 → ∞. This is precisely why smoothing is mandatory before perplexity can be computed on unseen test data — the chapter states this explicitly in §4.5.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q7</span><span class="badge concept">Concept</span>
+      <div class="qtext">Perplexity can also be understood as:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> The total number of N-grams in the training corpus</li>
+        <li class="correct"><span class="k">B.</span> The weighted average branching factor of the language, per the model</li>
+        <li><span class="k">C.</span> The vocabulary size V</li>
+        <li><span class="k">D.</span> The number of parameters in the model</li>
+      </ul>
+      <details class="reveal"><div class="expl">Directly from §4.4. The 10-equiprobable-digits case gives PP=10 exactly because the branching factor is 10; skewing the distribution (one digit far more frequent) lowers PP below 10 even though the branching factor is unchanged — because perplexity weights branches by probability.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q8</span><span class="badge hard">Tricky</span>
+      <div class="qtext">Two language models are compared by perplexity on the same test set. Model A uses a 50k-word closed vocabulary; Model B is open-vocabulary with &lt;UNK&gt;. Which statement is correct?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> Model B's perplexity is automatically lower because it handles unknown words</li>
+        <li class="correct"><span class="k">B.</span> The comparison is only meaningful if both models use the same vocabulary, since closed-vocabulary knowledge can artificially deflate perplexity</li>
+        <li><span class="k">C.</span> Perplexity cannot be computed for open-vocabulary models</li>
+        <li><span class="k">D.</span> Vocabulary choice never affects perplexity</li>
+      </ul>
+      <details class="reveal"><div class="expl">The chapter is explicit: "the perplexity of two language models is only comparable if they use the same vocabulary" — closed-vocabulary knowledge of the test set can artificially lower perplexity, so it must be applied equally to be a fair comparison.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q9</span><span class="badge concept">Concept</span>
+      <div class="qtext">Why does Laplace (add-one) smoothing perform poorly for N-gram language modeling in practice?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> It cannot assign any probability to unseen N-grams</li>
+        <li class="correct"><span class="k">B.</span> With a large vocabulary V, it moves far too much probability mass away from frequently-seen N-grams toward unseen ones</li>
+        <li><span class="k">C.</span> It only works for unigrams, not bigrams</li>
+        <li><span class="k">D.</span> It requires a held-out set to function</li>
+      </ul>
+      <details class="reveal"><div class="expl">The BeRP example shows C(want to) discounted from 608 to 238 (factor 0.39) and C(chinese food) from 82 to 8.2 (factor 0.10) — a factor-of-10 swing. That's the "sharp change... because too much probability mass is moved to all the zeros," quoted directly from §4.5.1.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q10</span><span class="badge numeric">Numeric reasoning</span>
+      <div class="qtext">In Good-Turing smoothing, if N₁ = 5,315 (number of singleton bigrams) and N = total bigram token count, the estimated total probability mass reserved for <b>all unseen bigrams combined</b> is:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> N₁ × N</li>
+        <li class="correct"><span class="k">B.</span> N₁ / N</li>
+        <li><span class="k">C.</span> N / N₁</li>
+        <li><span class="k">D.</span> 1 / N₁</li>
+      </ul>
+      <details class="reveal"><div class="expl">Eq. 4.27: P*_GT(unseen) = N₁/N. Note this is one number for the entire unseen category — it then gets divided further among individual unseen N-grams (as in the fish example, where the mass 3/18 was split between catfish and bass).</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q11</span><span class="badge concept">Concept</span>
+      <div class="qtext">The Kneser-Ney "continuation probability" for a word w is proportional to:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> The raw unigram count of w</li>
+        <li class="correct"><span class="k">B.</span> The number of distinct word types that precede w in the corpus</li>
+        <li><span class="k">C.</span> The number of times w starts a sentence</li>
+        <li><span class="k">D.</span> The length of w in characters</li>
+      </ul>
+      <details class="reveal"><div class="expl">This is the "San Francisco" vs. "glasses" argument: <em>Francisco</em> has high raw frequency but almost only follows <em>San</em> (few distinct preceding contexts), while <em>glasses</em> follows many different words. Kneser-Ney backs off using |{wᵢ₋₁ : C(wᵢ₋₁w)&gt;0}|, not raw frequency.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q12</span><span class="badge hard">Tricky</span>
+      <div class="qtext">In Katz backoff, why can't we simply use raw (undiscounted) MLE probabilities at each level and back off to the lower-order model whenever the higher-order count is zero?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> Because lower-order models are always less accurate</li>
+        <li class="correct"><span class="k">B.</span> Because the resulting distribution would no longer sum to 1 — extra probability mass would be double-counted</li>
+        <li><span class="k">C.</span> Because MLE probabilities can be negative</li>
+        <li><span class="k">D.</span> Because backoff only works with Good-Turing discounting, never with raw counts</li>
+      </ul>
+      <details class="reveal"><div class="expl">Directly from §4.7: "without discounts and α weights, the result... would not be a true probability!" MLE probabilities already sum to 1 across each context; adding backed-off mass on top with no discount pushes the total above 1. Discounting frees up exactly the mass that backoff redistributes.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q13</span><span class="badge concept">Concept</span>
+      <div class="qtext">What is the essential difference between backoff and interpolation?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> Backoff uses Good-Turing; interpolation uses Laplace</li>
+        <li class="correct"><span class="k">B.</span> Backoff uses only the highest-order N-gram with nonzero count; interpolation always mixes all orders together, weighted</li>
+        <li><span class="k">C.</span> Interpolation is only for trigrams; backoff is only for bigrams</li>
+        <li><span class="k">D.</span> They are mathematically identical, just different names</li>
+      </ul>
+      <details class="reveal"><div class="expl">Backoff "only backs off to a lower-order N-gram if we have zero evidence for a higher-order N-gram" — otherwise it trusts the higher order completely. Interpolation "always mixes the probability estimates from all the N-gram estimators," even when the trigram count is healthy.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q14</span><span class="badge numeric">Numeric reasoning</span>
+      <div class="qtext">In context-conditioned interpolation, Σᵢ λᵢ(w) must equal:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> V (vocabulary size)</li>
+        <li><span class="k">B.</span> N (corpus size)</li>
+        <li class="correct"><span class="k">C.</span> 1, for every context</li>
+        <li><span class="k">D.</span> 0</li>
+      </ul>
+      <details class="reveal"><div class="expl">Eq. 4.33: Σᵢλᵢ=1. This holds even when the λs are context-dependent functions λᵢ(wⁿ⁻¹ₙ₋₂) — for any fixed context, the weights on unigram+bigram+trigram must still sum to 1 or the result isn't a valid probability distribution.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q15</span><span class="badge hard">Tricky</span>
+      <div class="qtext">Trigram and quadrigram sentences generated from Shakespeare's works sometimes reproduce exact phrases from the original plays (e.g., "It cannot be but so" from King John). This happens primarily because:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> The generation algorithm has a bug</li>
+        <li class="correct"><span class="k">B.</span> Shakespeare's corpus (~884,647 tokens, ~29,066 types) is small relative to V⁴ possible quadrigrams, so many quadrigrams have only one observed continuation</li>
+        <li><span class="k">C.</span> Higher-order N-grams always memorize training data verbatim by design</li>
+        <li><span class="k">D.</span> Punctuation was excluded from training</li>
+      </ul>
+      <details class="reveal"><div class="expl">The chapter computes this explicitly: V⁴ ≈ 7×10¹⁷ possible quadrigrams versus a much smaller actual corpus, so the sparse matrix leaves "only five possible continuations" for some quadrigrams — sometimes only one. It's a sparse-data artifact, not a flaw in the generation procedure.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q16</span><span class="badge concept">Concept</span>
+      <div class="qtext">Class-based (IBM clustering) N-grams estimate P(wᵢ|wᵢ₋₁) as:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> P(wᵢ|wᵢ₋₁) directly, ignoring classes entirely</li>
+        <li class="correct"><span class="k">B.</span> P(cᵢ|cᵢ₋₁) × P(wᵢ|cᵢ)</li>
+        <li><span class="k">C.</span> P(wᵢ|cᵢ₋₁) + P(cᵢ|wᵢ₋₁)</li>
+        <li><span class="k">D.</span> max(P(wᵢ|wᵢ₋₁), P(cᵢ|cᵢ₋₁))</li>
+      </ul>
+      <details class="reveal"><div class="expl">Eq. from §4.9.2. This lets "to Shanghai" borrow strength from "to London/Beijing/Denver" if all four cities share a CITYNAME class — a hard-clustering approach to sparsity, distinct from smoothing.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q17</span><span class="badge hard">Tricky</span>
+      <div class="qtext">Cache language models mix a unigram model of the preceding document text with a static N-gram. Their known weakness is:</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> They cannot be combined with any other N-gram model</li>
+        <li class="correct"><span class="k">B.</span> In speech recognition, if an earlier word was itself mis-recognized, the cache "locks in" that error and biases future predictions</li>
+        <li><span class="k">C.</span> They only work for unigrams, not for higher-order N-grams</li>
+        <li><span class="k">D.</span> They require a closed vocabulary</li>
+      </ul>
+      <details class="reveal"><div class="expl">Stated directly in §4.9.4: cache models work well when previous words are known exactly (e.g., text prediction with user-corrected input) but poorly in ASR pipelines lacking correction, since a wrong earlier guess propagates forward via the cache.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q18</span><span class="badge numeric">Numeric reasoning</span>
+      <div class="qtext">Entropy H(X) = −Σ p(x)·log₂p(x) is minimized (equal to 0) when:</div>
+      <ul class="opts">
+        <li class="correct"><span class="k">A.</span> One outcome has probability 1 and all others have probability 0</li>
+        <li><span class="k">B.</span> All outcomes are equally likely</li>
+        <li><span class="k">C.</span> There are exactly 2 outcomes</li>
+        <li><span class="k">D.</span> The vocabulary is infinite</li>
+      </ul>
+      <details class="reveal"><div class="expl">Zero entropy = zero uncertainty = a fully deterministic outcome. Option B is the opposite case — a uniform distribution over N outcomes gives the <em>maximum</em> possible entropy, log₂N, not the minimum.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q19</span><span class="badge concept">Concept</span>
+      <div class="qtext">Cross-entropy H(p,m) relates to the true entropy H(p) of a language by:</div>
+      <ul class="opts">
+        <li class="correct"><span class="k">A.</span> H(p) ≤ H(p,m) always — cross-entropy is an upper bound, and a better model m makes the bound tighter</li>
+        <li><span class="k">B.</span> H(p,m) ≤ H(p) always</li>
+        <li><span class="k">C.</span> H(p,m) = H(p) for any model m</li>
+        <li><span class="k">D.</span> The two are unrelated</li>
+      </ul>
+      <details class="reveal"><div class="expl">Eq. 4.63. This is exactly why perplexity is a valid proxy for model quality: since PP=2^H(W) is built from cross-entropy against an approximating model, and cross-entropy can never underestimate the truth, a lower perplexity model is a demonstrably closer approximation, never an accidentally-optimistic one.</div></details>
+    </div>
+
+    <div class="mcq">
+      <span class="qnum">Q20</span><span class="badge hard">Tricky</span>
+      <div class="qtext">Chomsky's (1956/1957) critique of "finite-state Markov processes" as a model of language most directly led to which historical outcome, per the chapter's bibliographic notes?</div>
+      <ul class="opts">
+        <li><span class="k">A.</span> N-gram research was proven mathematically incorrect and abandoned permanently</li>
+        <li class="correct"><span class="k">B.</span> Many linguists and computational linguists ignored statistical modeling for decades, even though N-grams later resurged through IBM and CMU speech recognition work</li>
+        <li><span class="k">C.</span> Markov chains were replaced entirely by context-free grammars in all applications</li>
+        <li><span class="k">D.</span> Shannon retracted his 1948 entropy work in response</li>
+      </ul>
+      <details class="reveal"><div class="expl">The chapter is precise about this: Chomsky's arguments (about competence vs. a useful engineering heuristic) caused statistical modeling to be sidelined in linguistics for years, but N-grams resurged in the 1970s–80s via Jelinek/Mercer/Bahl at IBM and Baker at CMU for speech recognition — a sociological outcome, not a mathematical refutation.</div></details>
+    </div>
+  </div>
+
+  <!-- =================== EXERCISES TAB =================== -->
+  <div class="tab-panel" id="panel-exercises">
+    <div class="section-head">
+      <h2>End-of-chapter exercise solutions</h2>
+      <p>All ten exercises from §4.12, solved or given a complete solution method. 4.2–4.7 are programming tasks — implementation approach and reference pseudocode are given rather than a single "answer."</p>
+    </div>
+
+    <div class="prob">
+      <h3>4.1 — Write the trigram probability estimation equation</h3>
+      <p class="stmt">Modify Eq. 4.14 (the bigram MLE equation) to the trigram case.</p>
+      <div class="formula">P(wₙ | wₙ₋₂ wₙ₋₁) = C(wₙ₋₂ wₙ₋₁ wₙ) / C(wₙ₋₂ wₙ₋₁)</div>
+      <p class="why">Same pattern as Eq. 4.15 generalized: numerator = count of the full N-gram, denominator = count of its (N−1)-word prefix. For the very first trigram of a sentence, use two boundary tokens: P(w₁|&lt;s&gt;&lt;s&gt;).</p>
+    </div>
+
+    <div class="prob">
+      <h3>4.2 — Program to compute unsmoothed unigrams and bigrams</h3>
+      <p class="stmt">Core algorithm (language-agnostic):</p>
+      <div class="work">
+        <span class="step">1. Tokenize each sentence; prepend &lt;s&gt;, append &lt;/s&gt;.</span>
+        <span class="step">2. unigram_counts[w] += 1 for every token w (including &lt;/s&gt;, excluding &lt;s&gt;'s own count if you don't want to predict it).</span>
+        <span class="step">3. bigram_counts[(w_prev, w)] += 1 for every adjacent pair.</span>
+        <span class="step">4. P(w) = unigram_counts[w] / N</span>
+        <span class="step">5. P(w | w_prev) = bigram_counts[(w_prev,w)] / unigram_counts[w_prev]</span>
+      </div>
+      <div class="formula">from collections import Counter, defaultdict<br><br>
+def train(sentences):<br>
+&nbsp;&nbsp;uni, bi = Counter(), Counter()<br>
+&nbsp;&nbsp;for s in sentences:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toks = ["&lt;s&gt;"] + s + ["&lt;/s&gt;"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;uni.update(toks)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bi.update(zip(toks, toks[1:]))<br>
+&nbsp;&nbsp;return uni, bi<br><br>
+def p_bigram(w_prev, w, uni, bi):<br>
+&nbsp;&nbsp;return bi[(w_prev, w)] / uni[w_prev]</div>
+    </div>
+
+    <div class="prob">
+      <h3>4.3 — Compare statistics from two small corpora</h3>
+      <p class="stmt">Since this asks you to run your own program on your own data, the graded part is the <em>comparison methodology</em>, not one fixed numeric answer. What to report:</p>
+      <div class="work">
+        <span class="step">• Top-10 unigrams by frequency in each corpus — expect function words (the, to, i, a) to dominate both, since Zipf's law holds regardless of genre.</span>
+        <span class="step">• Where the two diverge: content words specific to register (e.g. "regards"/"attached" in email vs. slang/topic words in newsgroup posts).</span>
+        <span class="step">• Top bigrams: email tends to have fixed collocations ("please find", "let me", "thanks for"); newsgroups skew toward domain jargon and quoted-reply artifacts (">", "wrote:").</span>
+        <span class="step">• Report V (types) and N (tokens) for each — the corpus with more informal/misspelled text usually has a larger V for the same N (Gale &amp; Church's V ≳ O(√N) growth is genre-sensitive).</span>
+      </div>
+    </div>
+
+    <div class="prob">
+      <h3>4.4 — Add random sentence generation</h3>
+      <p class="stmt">Implements the Shannon (1951) technique used to generate Fig. 4.3/4.4 in the chapter.</p>
+      <div class="work">
+        <span class="step">1. Start with context = ("&lt;s&gt;",) [or ("&lt;s&gt;","&lt;s&gt;") for trigram].</span>
+        <span class="step">2. Lay all candidate next-words on the interval [0,1], each occupying a slice proportional to P(w | context).</span>
+        <span class="step">3. Draw r ~ Uniform(0,1); emit the word whose slice contains r.</span>
+        <span class="step">4. Slide the context forward by one word; repeat until &lt;/s&gt; is emitted.</span>
+      </div>
+      <div class="formula">import random<br>
+def generate(model, order=2):<br>
+&nbsp;&nbsp;ctx = ("&lt;s&gt;",) * (order-1)<br>
+&nbsp;&nbsp;out = []<br>
+&nbsp;&nbsp;while True:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;words, probs = model.next_word_dist(ctx)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;w = random.choices(words, weights=probs)[0]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if w == "&lt;/s&gt;": break<br>
+&nbsp;&nbsp;&nbsp;&nbsp;out.append(w); ctx = (ctx+(w,))[-(order-1):]<br>
+&nbsp;&nbsp;return " ".join(out)</div>
+    </div>
+
+    <div class="prob">
+      <h3>4.5 — Add Good-Turing discounting</h3>
+      <div class="work">
+        <span class="step">1. Build the frequency-of-frequencies table: N꜀ = number of distinct N-grams occurring exactly c times.</span>
+        <span class="step">2. (Simple Good-Turing) Smooth the N꜀ sequence via log-log linear regression: log(N꜀) = a + b·log(c), to avoid undefined c* when N꜀₊₁ = 0.</span>
+        <span class="step">3. For c ≤ k (Katz suggests k=5): c* = (c+1)·N꜀₊₁/N꜀, using the smoothed N꜀ values.</span>
+        <span class="step">4. For c &gt; k: keep c* = c (large counts are already reliable).</span>
+        <span class="step">5. Reserve P*(unseen) = N₁/N as the missing mass, per Eq. 4.27.</span>
+      </div>
+    </div>
+
+    <div class="prob">
+      <h3>4.6 — Implement Katz backoff</h3>
+      <div class="work">
+        <span class="step">1. Compute Good-Turing-discounted P* for every N-gram with count &gt; 0 (from 4.5).</span>
+        <span class="step">2. For each context, compute leftover mass β(context) = 1 − Σ P*(w|context) over seen continuations.</span>
+        <span class="step">3. Compute the normalizer α(context) = β(context) / Σ P_katz(w|shorter context) over w unseen in the full context.</span>
+        <span class="step">4. At query time: if C(context,w) &gt; 0 → return P*(w|context); else → return α(context) × P_katz(w | context minus its oldest word), recursing down to the unigram base case.</span>
+      </div>
+      <div class="formula">P_katz(z|x,y) = P*(z|x,y)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if C(x,y,z) &gt; 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= α(x,y)·P_katz(z|y)&nbsp;&nbsp;else if C(x,y) &gt; 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= P*(z)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise</div>
+    </div>
+
+    <div class="prob">
+      <h3>4.7 — Compute the perplexity of a test set</h3>
+      <div class="work">
+        <span class="step">1. Concatenate the test set's log-probabilities: logP(W) = Σᵢ log P(wᵢ | wᵢ₋₁) (bigram case), including &lt;/s&gt; but not the leading &lt;s&gt; in the token count N.</span>
+        <span class="step">2. H = −logP(W) / N &nbsp;(cross-entropy per word).</span>
+        <span class="step">3. PP(W) = 2^H &nbsp;(if logs were base 2) or exp(H) if natural logs were used consistently.</span>
+      </div>
+      <div class="formula">import math<br>
+def perplexity(test_sents, model):<br>
+&nbsp;&nbsp;logp, N = 0.0, 0<br>
+&nbsp;&nbsp;for s in test_sents:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;toks = ["&lt;s&gt;"] + s + ["&lt;/s&gt;"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for w_prev, w in zip(toks, toks[1:]):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logp += math.log2(model.p(w, w_prev))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;N += 1<br>
+&nbsp;&nbsp;return 2 ** (-logp / N)</div>
+    </div>
+
+    <div class="prob">
+      <h3>4.8 — Prove Eq. 4.27 from Eq. 4.26 (Michael Collins' exercise)</h3>
+      <p class="stmt"><b>Claim:</b> given c* = (c+1)·N꜀₊₁/N꜀ (Eq. 4.26), show P*<sub>GT</sub>(unseen) = N₁/N (Eq. 4.27).</p>
+      <div class="work">
+        <span class="step"><b>Step 1 — apply Eq. 4.26 at c=0:</b> c*₀ = (0+1)·N₁/N₀ = N₁/N₀.</span>
+        <span class="step"><b>Step 2 — total re-estimated count mass in the "unseen" bin:</b> there are N₀ distinct unseen N-grams, each re-assigned the adjusted count c*₀. Total mass for the bin = N₀ × c*₀ = N₀ × (N₁/N₀) = N₁.</span>
+        <span class="step"><b>Step 3 — convert count mass to probability:</b> any adjusted count is turned into a probability by dividing by N, the total number of (training) tokens/observations: P*<sub>GT</sub>(unseen) = (N₀ × c*₀) / N = N₁ / N. ∎</span>
+      </div>
+      <p class="why">Assumptions used: (i) all N꜀ are non-zero so Eq. 4.26 is defined, (ii) probabilities are obtained from adjusted counts the same way as from raw MLE counts — by dividing by N. Notice N₀ cancels algebraically, which is exactly why the (unknowable, astronomically large) count of unseen bigrams N₀ never actually needs to be computed. Sanity check: summing (c+1)N꜀₊₁ over all c from 0 upward telescopes to Σc·N꜀ = N, confirming Good-Turing redistributes the full probability mass consistently.</p>
+    </div>
+
+    <div class="prob">
+      <h3>4.9 — Bag generation (advanced)</h3>
+      <p class="stmt">Given a bag of words (order destroyed), reconstruct the most probable ordering using an N-gram LM as the scoring function.</p>
+      <div class="work">
+        <span class="step">1. Brute-force is infeasible: n words have n! orderings.</span>
+        <span class="step">2. Treat it as a shortest-path / DP problem over subsets, à la the Held–Karp TSP algorithm — this is the connection to Viterbi the exercise hints at.</span>
+        <span class="step">3. State: (S, w) where S ⊆ bag is the set of words placed so far and w ∈ S is the last word placed. Value: best[S,w] = highest log-probability of any ordering of S ending in w.</span>
+        <span class="step">4. Recurrence: best[S,w] = maxₓ∈S\{w} ( best[S\{w}, x] + log P(w | x) ), with base case best[{w},w] = log P(w | &lt;s&gt;).</span>
+        <span class="step">5. Answer = maxᵥ best[full bag, v] + log P(&lt;/s&gt; | v); backtrack pointers recover the actual order.</span>
+        <span class="step">6. Cost: O(2ⁿ·n²) — exponential in n but tractable for short sentences (n ≤ ~15–20), which is why this is framed as a Viterbi-style dynamic-programming exercise rather than a greedy one.</span>
+      </div>
+    </div>
+
+    <div class="prob">
+      <h3>4.10 — Authorship attribution via singleton-word Bayesian scoring</h3>
+      <p class="stmt">Method exactly as specified: build a unigram LM per candidate author, use only words that occur <b>exactly once</b> in the unknown text, and compare geometric means of their probabilities under each author model.</p>
+      <div class="work">
+        <span class="step">1. Train unigram LM<sub>A</sub> on Author A's known writings; LM<sub>B</sub> on Author B's.</span>
+        <span class="step">2. Find every word in the disputed text T that occurs exactly once in T — its singleton set S(T).</span>
+        <span class="step">3. P(T|A) = ( ∏_{w ∈ S(T)} P<sub>A</sub>(w) )^(1/|S(T)|) — the geometric mean, computed only from LM<sub>A</sub>'s probabilities for those words (using &lt;UNK&gt; smoothing for words A never used).</span>
+        <span class="step">4. Compute P(T|B) the same way from LM<sub>B</sub>.</span>
+        <span class="step">5. Attribute T to whichever author gives the higher geometric mean.</span>
+      </div>
+      <p class="why">Why singletons specifically: rare/idiosyncratic word choices (an author's "tics") are more discriminating than function-word frequencies, which are similar across most authors of the same language and era. See the worked toy numeric version of this exact method in the Numericals tab (Problem N9).</p>
+    </div>
+  </div>
+
+  <!-- =================== NUMERICALS TAB =================== -->
+  <div class="tab-panel" id="panel-numericals">
+    <div class="section-head">
+      <h2>Numerical problems</h2>
+      <p>Fresh numbers, same techniques as the chapter — including the two calculations the book explicitly "leaves as an exercise for the reader."</p>
+    </div>
+
+    <div class="prob">
+      <h3>N1 — Bigram MLE from a raw count table</h3>
+      <p class="stmt">A tiny corpus yields these bigram and unigram counts:</p>
+      <table class="mini">
+        <tr><th></th><th>the</th><th>cat</th><th>sat</th><th>C(row)</th></tr>
+        <tr><td>the</td><td>0</td><td>18</td><td>0</td><td>40</td></tr>
+        <tr><td>cat</td><td>2</td><td>0</td><td>15</td><td>20</td></tr>
+        <tr><td>sat</td><td>1</td><td>0</td><td>0</td><td>12</td></tr>
+      </table>
+      <p class="stmt">Find P(cat | the) and P(sat | cat).</p>
+      <div class="formula">
+        P(cat|the) = C(the cat)/C(the) = 18/40 = <b>0.45</b><br>
+        P(sat|cat) = C(cat sat)/C(cat) = 15/20 = <b>0.75</b>
+      </div>
+      <p class="why">Notice C(row) here isn't just the row's own bigram counts summed (there may be other continuations not shown) — always use the given unigram count C(wₙ₋₁), not a re-summed row total, unless you're told the table is exhaustive.</p>
+    </div>
+
+    <div class="prob">
+      <h3>N2 — Perplexity of a short test sentence</h3>
+      <p class="stmt">A bigram model gives: P(i|&lt;s&gt;)=0.25, P(want|i)=0.32, P(a|want)=0.65, P(flight|a)=0.5, P(&lt;/s&gt;|flight)=0.2. Compute the perplexity of "i want a flight" (N=5, counting &lt;/s&gt; but not &lt;s&gt;).</p>
+      <div class="formula">
+        P(W) = 0.25 × 0.32 × 0.65 × 0.5 × 0.2 = 0.0052<br>
+        PP(W) = P(W)^(−1/5) = 0.0052^(−0.2)
+      </div>
+      <div class="work">
+        <span class="step">ln(0.0052) = −5.259 → −5.259/5 = −1.0518 → PP = exp(1.0518)</span>
+      </div>
+      <p class="answer-line">PP(W) ≈ 2.86</p>
+      <p class="why">A perplexity near 2.86 with 5 words means the model was, on average, about as uncertain as choosing among ~3 equally likely words at each step — a well-fitted in-domain model.</p>
+    </div>
+
+    <div class="prob">
+      <h3>N3 — Add-one smoothing of a zero-count bigram</h3>
+      <p class="stmt">Vocabulary V = 500. The word "blue" occurs C(blue)=90 times. The bigram "blue sky" never occurs: C(blue sky)=0. Find the Laplace-smoothed P*(sky|blue).</p>
+      <div class="formula">P*(sky|blue) = [C(blue sky)+1] / [C(blue)+V] = (0+1)/(90+500) = 1/590</div>
+      <p class="answer-line">P*(sky|blue) ≈ 0.00169</p>
+      <p class="why">Compare to what MLE alone would give: exactly 0, which would zero out any sentence containing "blue sky." Laplace trades that hard zero for a small but non-zero, uniformly-assigned probability.</p>
+    </div>
+
+    <div class="prob">
+      <h3>N4 — Good-Turing on a birdwatching count (fish example, remixed)</h3>
+      <p class="stmt">Over a season, a birdwatcher logs 7 species: crow ×12, sparrow ×7, robin ×4, finch ×2, wren ×1, dove ×1, jay ×1 — out of 10 species in the local field guide (3 never seen: eagle, hawk, owl). Find (a) the probability the next sighting is an unseen species, (b) the probability it's specifically an eagle, and (c) the Good-Turing adjusted count for a singleton species like wren.</p>
+      <div class="work">
+        <span class="step">N = 12+7+4+2+1+1+1 = 28 total sightings.</span>
+        <span class="step">N₁ (species seen exactly once) = {wren, dove, jay} → N₁ = 3.</span>
+        <span class="step">N₂ (species seen exactly twice) = {finch} → N₂ = 1.</span>
+      </div>
+      <div class="formula">
+        (a) P*<sub>GT</sub>(unseen) = N₁/N = 3/28 ≈ <b>0.107</b><br>
+        (b) P*<sub>GT</sub>(eagle) = (1/3 unseen species) × 3/28 = 1/28 ≈ <b>0.0357</b><br>
+        (c) c*(wren) = (1+1)·N₂/N₁ = 2×(1/3) = <b>0.667</b>&nbsp;<span style="color:var(--muted);">(vs. raw MLE count of 1)</span>
+      </div>
+      <p class="why">This mirrors the book's trout/catfish/bass example exactly: the singleton count of 1 gets discounted down to 0.667, and that "stolen" 0.333 of probability mass (×3 singleton species = 1 unit of count) is what funds the unseen-species estimate.</p>
+    </div>
+
+    <div class="prob">
+      <h3>N5 — Entropy of a biased 4-outcome source</h3>
+      <p class="stmt">A source emits 4 symbols with P(A)=0.5, P(B)=0.25, P(C)=0.125, P(D)=0.125. Compute H(X) in bits, and compare to the entropy of a uniform 4-symbol source.</p>
+      <div class="formula">
+        H(X) = −[0.5·log₂0.5 + 0.25·log₂0.25 + 0.125·log₂0.125 + 0.125·log₂0.125]<br>
+        &nbsp;&nbsp;&nbsp;= −[0.5×(−1) + 0.25×(−2) + 0.125×(−3) + 0.125×(−3)]<br>
+        &nbsp;&nbsp;&nbsp;= 0.5 + 0.5 + 0.375 + 0.375
+      </div>
+      <p class="answer-line">H(X) = 1.75 bits &nbsp;<span style="color:var(--muted);font-weight:400;">(uniform 4-symbol source: H = log₂4 = 2 bits)</span></p>
+      <p class="why">Skewing the distribution always lowers entropy below the uniform maximum (log₂ of the outcome count) — exactly the same relationship exploited in Problem N6 below and in the chapter's digit-perplexity discussion.</p>
+    </div>
+
+    <div class="prob">
+      <h3>N6 — The digit-perplexity calculation the book "leaves to the reader"</h3>
+      <p class="stmt">10 digits (0–9) are recognized. Digit "0" occurs 10× more often than each other digit (which are equally likely among themselves). Find the perplexity of this mini-language, and confirm it's lower than the uniform case's PP=10.</p>
+      <div class="work">
+        <span class="step">Let each non-zero digit have probability p; then P(0)=10p. Normalizing: 10p + 9p = 1 → p = 1/19.</span>
+        <span class="step">So P(0) = 10/19 ≈ 0.5263, and P(other digit) = 1/19 ≈ 0.0526 each.</span>
+        <span class="step">Entropy: H = −[P(0)log₂P(0) + 9·P(other)log₂P(other)]</span>
+        <span class="step">= −[0.5263×(−0.926) + 9×0.0526×(−4.248)]</span>
+        <span class="step">= −[−0.4875 − 2.0121] = 2.4996 ≈ 2.5 bits</span>
+      </div>
+      <div class="formula">Perplexity = 2^H = 2^2.5</div>
+      <p class="answer-line">PP ≈ 5.66 &nbsp;<span style="color:var(--muted);font-weight:400;">(down from PP=10 in the uniform case)</span></p>
+      <p class="why">The branching factor is still literally 10 (ten digits are still possible), but perplexity — the <em>weighted</em> branching factor — drops because "0" is so predictable that most digits carry little surprise. This is precisely the intuition the chapter asks you to confirm by calculation.</p>
+    </div>
+
+    <div class="prob">
+      <h3>N7 — P(i want chinese food) from the BeRP table (the book's other "left to the reader")</h3>
+      <p class="stmt">Using Fig. 4.2's probabilities — P(i|&lt;s&gt;)=0.25, P(want|i)=0.33, P(chinese|want)=0.0065, P(food|chinese)=0.52, P(&lt;/s&gt;|food)=0.68 — compute P(&lt;s&gt; i want chinese food &lt;/s&gt;) and compare it to the book's worked value for "i want english food" (0.000031).</p>
+      <div class="formula">
+        P = 0.25 × 0.33 × 0.0065 × 0.52 × 0.68<br>
+        = 0.0825 × 0.0065 × 0.52 × 0.68<br>
+        = 0.00053625 × 0.52 × 0.68
+      </div>
+      <p class="answer-line">P(i want chinese food) ≈ 0.00019 (1.9 × 10⁻⁴)</p>
+      <p class="why">About 6× higher than "i want english food" (3.1 × 10⁻⁵) — mainly because P(chinese|want)=0.0065 dwarfs P(english|want)=0.0011, and P(food|chinese)=0.52 beats P(food|english)=0.5 only slightly. The chapter calls this a "cultural" fact baked into the bigram counts, not a syntactic one: nothing is grammatically wrong with either phrase.</p>
+    </div>
+
+    <div class="prob">
+      <h3>N8 — Kneser-Ney continuation probability</h3>
+      <p class="stmt">In a corpus with 40,000 distinct bigram types total, the word "Francisco" follows only 1 distinct preceding word ("San"), while "cheap" follows 6 distinct preceding words (very/so/too/quite/get/find cheap). Compute P_CONTINUATION for each and state which word is more "portable" to new contexts.</p>
+      <div class="formula">
+        P_CONT(Francisco) = |{w : C(w,Francisco)&gt;0}| / Σ = 1/40,000 = <b>0.000025</b><br>
+        P_CONT(cheap) = 6/40,000 = <b>0.00015</b>
+      </div>
+      <p class="answer-line">"cheap" is 6× more "continuation-worthy" than "Francisco", despite Francisco likely having a higher raw unigram count.</p>
+      <p class="why">This is exactly why Kneser-Ney backs off to P_CONTINUATION instead of the raw unigram MLE — it correctly predicts that "cheap" is the safer bet after an unfamiliar adjective-modifier context, while "Francisco" is a one-trick word tied almost entirely to "San".</p>
+    </div>
+
+    <div class="prob">
+      <h3>N9 — Toy worked example of Exercise 4.10 (authorship attribution)</h3>
+      <p class="stmt">Author A's 100-word training corpus has singleton words {hitherto, wherefore, verily} (each P=1/100=0.01 under LM<sub>A</sub>). Author B's 100-word corpus has singleton words {basically, actually, okay} (each P=0.01 under LM<sub>B</sub>, but "wherefore" and "verily" never appear in B's writing at all). A disputed text T has exactly two singleton words: "wherefore" and "verily". Which author does the geometric-mean test attribute T to?</p>
+      <div class="formula">
+        P(T|A) = (P<sub>A</sub>(wherefore) × P<sub>A</sub>(verily))^(1/2) = (0.01 × 0.01)^0.5 = <b>0.01</b><br>
+        P(T|B) = (P<sub>B</sub>(wherefore) × P<sub>B</sub>(verily))^(1/2) = (≈0 × ≈0)^0.5 ≈ <b>0</b> &nbsp;<span style="color:var(--muted);">(unseen in B's corpus)</span>
+      </div>
+      <p class="answer-line">P(T|A) ≫ P(T|B) → the text is attributed to Author A.</p>
+      <p class="why">This is a deliberately extreme toy case to make the mechanism visible: in a real run you'd apply &lt;UNK&gt;-style smoothing so B's probabilities aren't literally zero, but the geometric mean would still be far smaller than A's, since B's model has never encountered either word in any form. Real authorship studies (Mosteller &amp; Wallace on the Federalist Papers) use richer feature sets, but the singleton-word Bayesian comparison is the simplified version this exercise asks you to implement.</p>
+    </div>
+  </div>
+
+  <div class="footer">Based on Jurafsky &amp; Martin, <em>Speech and Language Processing</em>, 2nd ed., Chapter 4. Cross-check derivations against your own course notes before an exam — some instructors use slightly different notation conventions (e.g. log base or discount symbols).</div>
+</div>
+
+<script>
+(function(){
+  var buttons = document.querySelectorAll('.tab-btn');
+  var panels = { mcq: document.getElementById('panel-mcq'), exercises: document.getElementById('panel-exercises'), numericals: document.getElementById('panel-numericals') };
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      Object.keys(panels).forEach(function(k){ panels[k].classList.remove('active'); });
+      panels[btn.getAttribute('data-tab')].classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+})();
+</script>

@@ -1,0 +1,8 @@
+{
+  "source": "D:\\CODING\\NLP\\Assignment_1\\output_full\\tokenized_sentences.parquet",
+  "n_total": 1000000,
+  "n_train": 998000,
+  "n_dev": 1000,
+  "n_test": 1000,
+  "seed": 42
+}

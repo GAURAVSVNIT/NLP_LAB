@@ -1,0 +1,348 @@
+{
+  "vocab_size": 222199,
+  "raw_train_types": 541732,
+  "train_tokens": 16200343,
+  "n_train_sentences": 998000,
+  "n_dev_sentences": 1000,
+  "n_test_sentences": 1000,
+  "dev_oov_rate": 0.028610178248514594,
+  "test_oov_rate": 0.030999245593580686,
+  "interpolated_lambdas": {
+    "1": 0.999,
+    "2": 0.7,
+    "3": 0.2,
+    "4": 0.05
+  },
+  "kneser_ney_discount": 0.7725722795665794,
+  "methods": {
+    "interpolated": {
+      "perplexity": {
+        "unigram": {
+          "order": 1,
+          "dev_perplexity": 2604.4641549640232,
+          "test_perplexity": 2420.896960833412,
+          "tokens": 16484
+        },
+        "bigram": {
+          "order": 2,
+          "dev_perplexity": 500.48991475628213,
+          "test_perplexity": 474.5352372350601,
+          "tokens": 16484,
+          "unique_ngrams": 4789360
+        },
+        "trigram": {
+          "order": 3,
+          "dev_perplexity": 452.47952887492715,
+          "test_perplexity": 432.5647833421908,
+          "tokens": 16484,
+          "unique_ngrams": 9953519
+        },
+        "quadrigram": {
+          "order": 4,
+          "dev_perplexity": 458.6608793885856,
+          "test_perplexity": 436.89917404625504,
+          "tokens": 16484,
+          "unique_ngrams": 12410639
+        }
+      }
+    },
+    "good_turing": {
+      "perplexity": {
+        "unigram": {
+          "order": 1,
+          "dev_perplexity": 2604.1579342425202,
+          "test_perplexity": 2420.3955180405624,
+          "tokens": 16484,
+          "unique_ngrams": 222199
+        },
+        "bigram": {
+          "order": 2,
+          "dev_perplexity": 2695074.098070842,
+          "test_perplexity": 2400611.5072611454,
+          "tokens": 16484,
+          "unique_ngrams": 4789360
+        },
+        "trigram": {
+          "order": 3,
+          "dev_perplexity": 340090612139.8272,
+          "test_perplexity": 256173071368.2033,
+          "tokens": 16484,
+          "unique_ngrams": 9953519
+        },
+        "quadrigram": {
+          "order": 4,
+          "dev_perplexity": 2.139934639033201e+17,
+          "test_perplexity": 1.4289279541984642e+17,
+          "tokens": 16484,
+          "unique_ngrams": 12410639
+        }
+      }
+    },
+    "katz_backoff": {
+      "perplexity": {
+        "unigram": {
+          "order": 1,
+          "dev_perplexity": 2604.1579342425202,
+          "test_perplexity": 2420.3955180405624,
+          "tokens": 16484,
+          "unique_ngrams": 222199
+        },
+        "bigram": {
+          "order": 2,
+          "dev_perplexity": 431.16860320554156,
+          "test_perplexity": 404.7308779797626,
+          "tokens": 16484,
+          "unique_ngrams": 4789360
+        },
+        "trigram": {
+          "order": 3,
+          "dev_perplexity": 377.4378926153938,
+          "test_perplexity": 359.9675479271361,
+          "tokens": 16484,
+          "unique_ngrams": 9953519
+        },
+        "quadrigram": {
+          "order": 4,
+          "dev_perplexity": 393.16938746869647,
+          "test_perplexity": 375.5344549326457,
+          "tokens": 16484,
+          "unique_ngrams": 12410639
+        }
+      }
+    },
+    "stupid_backoff": {
+      "perplexity": {
+        "unigram": {
+          "order": 1,
+          "dev_perplexity": 2604.1579342425202,
+          "test_perplexity": 2420.3955180405624,
+          "tokens": 16484,
+          "unique_ngrams": 222199
+        },
+        "bigram": {
+          "order": 2,
+          "dev_perplexity": 394.5793778495002,
+          "test_perplexity": 373.89816096789104,
+          "tokens": 16484,
+          "unique_ngrams": 4789360
+        },
+        "trigram": {
+          "order": 3,
+          "dev_perplexity": 462.8807165703479,
+          "test_perplexity": 441.2952856227086,
+          "tokens": 16484,
+          "unique_ngrams": 9953519
+        },
+        "quadrigram": {
+          "order": 4,
+          "dev_perplexity": 857.7619219530857,
+          "test_perplexity": 802.7728319912633,
+          "tokens": 16484,
+          "unique_ngrams": 12410639
+        }
+      }
+    },
+    "kneser_ney": {
+      "perplexity": {
+        "unigram": {
+          "order": 1,
+          "dev_perplexity": 4240.729043368647,
+          "test_perplexity": 4046.933640445628,
+          "tokens": 16484,
+          "unique_ngrams": 222199
+        },
+        "bigram": {
+          "order": 2,
+          "dev_perplexity": 407.8322302272068,
+          "test_perplexity": 385.44164274707214,
+          "tokens": 16484,
+          "unique_ngrams": 4789360
+        },
+        "trigram": {
+          "order": 3,
+          "dev_perplexity": 360.94871825804563,
+          "test_perplexity": 344.26576548912016,
+          "tokens": 16484,
+          "unique_ngrams": 9953519
+        },
+        "quadrigram": {
+          "order": 4,
+          "dev_perplexity": 377.30717613540753,
+          "test_perplexity": 358.26961791592856,
+          "tokens": 16484,
+          "unique_ngrams": 12410639
+        }
+      }
+    }
+  },
+  "by_order": {
+    "unigram": {
+      "interpolated": {
+        "dev": 2604.4641549640232,
+        "test": 2420.896960833412
+      },
+      "good_turing": {
+        "dev": 2604.1579342425202,
+        "test": 2420.3955180405624
+      },
+      "katz_backoff": {
+        "dev": 2604.1579342425202,
+        "test": 2420.3955180405624
+      },
+      "stupid_backoff": {
+        "dev": 2604.1579342425202,
+        "test": 2420.3955180405624
+      },
+      "kneser_ney": {
+        "dev": 4240.729043368647,
+        "test": 4046.933640445628
+      },
+      "laplace": {
+        "dev": 2610.9282843308574,
+        "test": 2429.2756198443626
+      },
+      "add_k": {
+        "dev": 2605.635992258165,
+        "test": 2422.627470064268
+      }
+    },
+    "bigram": {
+      "interpolated": {
+        "dev": 500.48991475628213,
+        "test": 474.5352372350601
+      },
+      "good_turing": {
+        "dev": 2695074.098070842,
+        "test": 2400611.5072611454
+      },
+      "katz_backoff": {
+        "dev": 431.16860320554156,
+        "test": 404.7308779797626
+      },
+      "stupid_backoff": {
+        "dev": 394.5793778495002,
+        "test": 373.89816096789104
+      },
+      "kneser_ney": {
+        "dev": 407.8322302272068,
+        "test": 385.44164274707214
+      },
+      "laplace": {
+        "dev": 5359.844568926861,
+        "test": 4896.376978213988
+      },
+      "add_k": {
+        "dev": 2976.9408841010945,
+        "test": 2725.8814059277647
+      }
+    },
+    "trigram": {
+      "interpolated": {
+        "dev": 452.47952887492715,
+        "test": 432.5647833421908
+      },
+      "good_turing": {
+        "dev": 340090612139.8272,
+        "test": 256173071368.2033
+      },
+      "katz_backoff": {
+        "dev": 377.4378926153938,
+        "test": 359.9675479271361
+      },
+      "stupid_backoff": {
+        "dev": 462.8807165703479,
+        "test": 441.2952856227086
+      },
+      "kneser_ney": {
+        "dev": 360.94871825804563,
+        "test": 344.26576548912016
+      },
+      "laplace": {
+        "dev": 37653.82865923288,
+        "test": 34912.745735788034
+      },
+      "add_k": {
+        "dev": 25575.86274828498,
+        "test": 23594.458966266993
+      }
+    },
+    "quadrigram": {
+      "interpolated": {
+        "dev": 458.6608793885856,
+        "test": 436.89917404625504
+      },
+      "good_turing": {
+        "dev": 2.139934639033201e+17,
+        "test": 1.4289279541984642e+17
+      },
+      "katz_backoff": {
+        "dev": 393.16938746869647,
+        "test": 375.5344549326457
+      },
+      "stupid_backoff": {
+        "dev": 857.7619219530857,
+        "test": 802.7728319912633
+      },
+      "kneser_ney": {
+        "dev": 377.30717613540753,
+        "test": 358.26961791592856
+      },
+      "laplace": {
+        "dev": 87766.18835576792,
+        "test": 83181.81670013329
+      },
+      "add_k": {
+        "dev": 70423.64830376892,
+        "test": 66251.17603384984
+      }
+    }
+  },
+  "trigram_examples": [
+    {
+      "context": [
+        "એક",
+        "રિપોર્ટ"
+      ],
+      "kneser_ney_top5": [
+        "અનુસાર",
+        "મુજબ",
+        "પ્રમાણે",
+        "તૈયાર",
+        "રજૂ"
+      ]
+    },
+    {
+      "context": [
+        "આદિલના",
+        "પરિવારની"
+      ],
+      "kneser_ney_top5": []
+    },
+    {
+      "context": [
+        "આજે",
+        "સ્થિતિ"
+      ],
+      "kneser_ney_top5": [
+        "એવી",
+        "એ",
+        "</s>",
+        "બદલાઈ",
+        "સાવ"
+      ]
+    },
+    {
+      "context": [
+        "મનપા",
+        "દ્વારા"
+      ],
+      "kneser_ney_top5": [
+        "કરવામાં",
+        "પણ",
+        "જાહેર",
+        "આ",
+        "નક્કી"
+      ]
+    }
+  ]
+}

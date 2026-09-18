@@ -1,0 +1,88 @@
+{
+  "vocab_size": 222199,
+  "raw_train_types": 541732,
+  "train_tokens": 16200343,
+  "n_train_sentences": 998000,
+  "n_dev_sentences": 1000,
+  "n_test_sentences": 1000,
+  "dev_oov_rate": 0.028610178248514594,
+  "test_oov_rate": 0.030999245593580686,
+  "perplexity": {
+    "unigram": {
+      "order": 1,
+      "dev_perplexity": 2610.9282843308574,
+      "test_perplexity": 2429.2756198443626,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 222199
+    },
+    "bigram": {
+      "order": 2,
+      "dev_perplexity": 5359.844568926861,
+      "test_perplexity": 4896.376978213988,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 4789360
+    },
+    "trigram": {
+      "order": 3,
+      "dev_perplexity": 37653.82865923288,
+      "test_perplexity": 34912.745735788034,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 9953519
+    },
+    "quadrigram": {
+      "order": 4,
+      "dev_perplexity": 87766.18835576792,
+      "test_perplexity": 83181.81670013329,
+      "scored_tokens": 16484,
+      "n_unique_ngrams": 12410639
+    }
+  },
+  "trigram_examples": [
+    {
+      "context": [
+        "એક",
+        "રિપોર્ટ"
+      ],
+      "top_next_words": [
+        "અનુસાર",
+        "મુજબ",
+        "પ્રમાણે",
+        "તૈયાર",
+        "રજૂ"
+      ]
+    },
+    {
+      "context": [
+        "આદિલના",
+        "પરિવારની"
+      ],
+      "top_next_words": []
+    },
+    {
+      "context": [
+        "આજે",
+        "સ્થિતિ"
+      ],
+      "top_next_words": [
+        "એવી",
+        "એ",
+        "</s>",
+        "સાવ",
+        "બદલાઈ"
+      ]
+    },
+    {
+      "context": [
+        "મનપા",
+        "દ્વારા"
+      ],
+      "top_next_words": [
+        "કરવામાં",
+        "નક્કી",
+        "પણ",
+        "જાહેર",
+        "શહેરમાં"
+      ]
+    }
+  ]
+}

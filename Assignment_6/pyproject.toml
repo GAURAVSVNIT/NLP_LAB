@@ -1,0 +1,9 @@
+[project]
+name = "assignment-6"
+version = "0.1.0"
+description = "NLP Lab 6: Advanced Smoothing Techniques (Interpolated, Good-Turing, Katz Backoff, Stupid Backoff, Kneser-Ney) for N-gram Language Models"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.11.1",
+    "reportlab>=4.2.5",
+]

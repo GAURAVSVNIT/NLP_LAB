@@ -1,0 +1,9 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+
+# Virtual environment
+.venv
+
+# Large regenerable data (see README.md: `uv run src/build_splits.py`)
+output/train.txt

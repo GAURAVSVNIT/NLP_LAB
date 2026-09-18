@@ -1,0 +1,828 @@
+<title>NLP Notes Companion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#f6f4ee; --surface:#ffffff; --surface-2:#eee9dc; --border:#ddd6c4;
+    --ink:#1b2422; --ink-2:#4a5551; --muted:#7c8783;
+    --accent:#00897b; --accent-rgb:0,137,123;
+    --accent-2:#d9661c; --accent-2-rgb:217,102,28;
+    --accent-3:#7a5fb0; --accent-3-rgb:122,95,176;
+    --good:#2e7d4f; --bad:#b3402f;
+    --shadow: 0 1px 2px rgba(20,20,16,.04), 0 6px 20px rgba(20,20,16,.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121917; --surface:#182220; --surface-2:#1e2b28; --border:#2b3a36;
+      --ink:#eef2ef; --ink-2:#b9c6c1; --muted:#82918c;
+      --accent:#39b3a4; --accent-rgb:57,179,164;
+      --accent-2:#e28a52; --accent-2-rgb:226,138,82;
+      --accent-3:#a08bd0; --accent-3-rgb:160,139,208;
+      --good:#5fbf86; --bad:#e0715c;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121917; --surface:#182220; --surface-2:#1e2b28; --border:#2b3a36;
+    --ink:#eef2ef; --ink-2:#b9c6c1; --muted:#82918c;
+    --accent:#39b3a4; --accent-rgb:57,179,164;
+    --accent-2:#e28a52; --accent-2-rgb:226,138,82;
+    --accent-3:#a08bd0; --accent-3-rgb:160,139,208;
+    --good:#5fbf86; --bad:#e0715c;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:15.5px; line-height:1.6;}
+  h1,h2,h3{font-family:"Newsreader",Georgia,serif; text-wrap:balance; font-weight:600; color:var(--ink);}
+  code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+  em{font-style:italic;}
+  a{color:var(--accent);}
+  .eyebrow{text-transform:uppercase; letter-spacing:.11em; font-size:11.5px; font-weight:600; color:var(--accent);}
+
+  .shell{ display:grid; grid-template-columns:250px minmax(0,1fr); gap:0; max-width:1300px; margin:0 auto;}
+  @media (max-width:900px){ .shell{grid-template-columns:1fr;} }
+
+  nav.toc{ position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto; padding:26px 16px 26px 22px; border-right:1px solid var(--border);}
+  @media (max-width:900px){
+    nav.toc{ position:sticky; top:0; height:auto; z-index:30; background:var(--bg); border-right:none; border-bottom:1px solid var(--border); padding:10px 14px; overflow-x:auto; overflow-y:hidden;}
+    nav.toc ul{display:flex; gap:6px; flex-wrap:nowrap; margin:0; padding:0;}
+    nav.toc .toc-title{display:none;}
+  }
+  nav.toc .toc-title{font-family:"Newsreader",serif; font-weight:600; font-size:16px; margin-bottom:14px;}
+  nav.toc ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px;}
+  nav.toc a{display:block; color:var(--ink-2); text-decoration:none; font-size:13px; padding:6px 9px; border-radius:7px; white-space:nowrap;}
+  nav.toc a:hover{background:var(--surface-2); color:var(--ink);}
+
+  main{padding:0 0 80px;}
+  section{ padding:46px clamp(18px,4vw,52px) 6px; scroll-margin-top:66px; }
+  section + section{border-top:1px solid var(--border);}
+  .section-head{margin-bottom:24px; max-width:760px;}
+  .section-head h2{font-size:24px; margin:5px 0 8px;}
+  .section-head p{color:var(--ink-2); font-size:14.3px; max-width:700px;}
+
+  .hero{padding:42px clamp(18px,4vw,52px) 32px; border-bottom:1px solid var(--border);}
+  .hero h1{font-size:clamp(28px,4vw,38px); margin:8px 0 10px; letter-spacing:-.01em;}
+  .hero .sub{color:var(--ink-2); font-size:15.5px; max-width:680px;}
+
+  .grid{display:grid; gap:14px;}
+  .g2{grid-template-columns:repeat(2,1fr);}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g4{grid-template-columns:repeat(4,1fr);}
+  @media (max-width:760px){ .g2,.g3,.g4{grid-template-columns:1fr;} }
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow);}
+  .card h3{font-size:15px; margin:0 0 7px; font-family:"IBM Plex Sans",sans-serif; font-weight:600;}
+  .card p{font-size:13.4px; color:var(--ink-2); margin:0;}
+  .tag{display:inline-block; font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; padding:2px 8px; border-radius:99px; background:rgba(var(--accent-rgb),.14); color:var(--accent); margin-bottom:7px;}
+  .tag.amber{background:rgba(var(--accent-2-rgb),.16); color:var(--accent-2);}
+  .tag.plum{background:rgba(var(--accent-3-rgb),.16); color:var(--accent-3);}
+
+  .formula{background:var(--surface-2); border:1px solid var(--border); border-radius:9px; padding:12px 16px; font-family:"IBM Plex Mono",monospace; font-size:13.3px; overflow-x:auto; color:var(--ink); line-height:1.75;}
+  .formula .comment{color:var(--muted); font-style:italic;}
+
+  .note{border-left:3px solid var(--accent-2); background:rgba(var(--accent-2-rgb),.07); border-radius:0 8px 8px 0; padding:10px 14px; font-size:13px; color:var(--ink-2); margin:12px 0;}
+  .note b{color:var(--ink);}
+  .fix{border-left:3px solid var(--bad); background:rgba(179,64,47,.07); border-radius:0 8px 8px 0; padding:10px 14px; font-size:13px; color:var(--ink-2); margin:12px 0;}
+  .fix b{color:var(--bad);}
+
+  table.data{border-collapse:collapse; width:100%; font-family:"IBM Plex Mono",monospace; font-size:13px;}
+  table.data th, table.data td{padding:8px 13px; text-align:left; border-bottom:1px solid var(--border);}
+  table.data th{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:11.3px; color:var(--ink-2); background:var(--surface-2);}
+  table.data tr:last-child td{border-bottom:none;}
+  .twrap{overflow-x:auto; border-radius:10px; border:1px solid var(--border);}
+
+  .chain{display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .chain .step{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 13px; font-family:"IBM Plex Mono",monospace; font-size:12.5px; box-shadow:var(--shadow); flex:1 1 170px;}
+  .chain .step .t{font-family:"IBM Plex Sans",sans-serif; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); display:block; margin-bottom:4px;}
+  .chain .arrow{color:var(--muted); font-size:18px; flex:0 0 auto;}
+  @media (max-width:760px){ .chain{flex-direction:column; align-items:stretch;} .chain .arrow{transform:rotate(90deg); text-align:center;} }
+
+  .fsa-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-family:"IBM Plex Mono",monospace; font-size:13px; margin:16px 0;}
+  .fsa-node{width:38px; height:38px; border-radius:50%; border:2px solid var(--ink-2); display:flex; align-items:center; justify-content:center; font-size:12px; background:var(--surface); flex:0 0 auto;}
+  .fsa-node.final{border-color:var(--accent); box-shadow:0 0 0 3px rgba(var(--accent-rgb),.15) inset;}
+  .fsa-arrow{color:var(--muted); font-size:12px; display:flex; flex-direction:column; align-items:center; gap:1px;}
+
+  details.qa{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:2px 16px; margin-bottom:8px;}
+  details.qa summary{cursor:pointer; padding:10px 0; font-size:13.3px; font-weight:500; list-style:none;}
+  details.qa summary::-webkit-details-marker{display:none;}
+  details.qa summary::before{content:"+ "; color:var(--accent); font-weight:700; font-family:"IBM Plex Mono",monospace;}
+  details.qa[open] summary::before{content:"– ";}
+  details.qa .a{padding:0 0 12px; font-size:13px; color:var(--ink-2); border-top:1px solid var(--border); padding-top:10px;}
+
+  .footer{padding:32px clamp(18px,4vw,52px); color:var(--muted); font-size:12px; border-top:1px solid var(--border);}
+</style>
+
+<div class="shell">
+  <nav class="toc">
+    <div class="toc-title">Your NLP Notes — Explained</div>
+    <ul>
+      <li><a href="#map">How this maps to your notes</a></li>
+      <li><a href="#foundations">Day 1–2 · Foundations</a></li>
+      <li><a href="#history">History · Turing, ELIZA, MT</a></li>
+      <li><a href="#tasks">Task taxonomy</a></li>
+      <li><a href="#applications">Applications survey</a></li>
+      <li><a href="#pipeline">Pipeline & data splits</a></li>
+      <li><a href="#tokenization">Tokenization</a></li>
+      <li><a href="#regex">Regular expressions</a></li>
+      <li><a href="#formats">Annotation formats</a></li>
+      <li><a href="#fsa">Finite-state automata</a></li>
+      <li><a href="#morphology">Morphology & FSTs</a></li>
+      <li><a href="#ngram">N-gram language models</a></li>
+      <li><a href="#smoothing">The smoothing zoo</a></li>
+      <li><a href="#interp">Interpolation vs. backoff</a></li>
+      <li><a href="#zipf">Zipf's law</a></li>
+      <li><a href="#bpe">Byte-Pair Encoding</a></li>
+      <li><a href="#corrections">Corrections to flag</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="eyebrow">Your handwritten notes + Jurafsky & Martin, cross-checked</div>
+      <h1>NLP Course Companion</h1>
+      <p class="sub">I read all 56 pages of your class notes and matched them against Chapters 2 (Regex & Automata), 3 (Words & Transducers), and 4 (N-grams) of the textbook. Everything below follows <em>your</em> notes' order and terminology — the book fills in the steps your notes compress into an arrow or a single line.</p>
+    </div>
+
+    <!-- MAP -->
+    <section id="map">
+      <div class="section-head">
+        <div class="eyebrow">Orientation</div>
+        <h2>What's in your notebook, in order</h2>
+        <p>Your notes run 27/07 → 01/09 and cover far more than N-grams. Here's the spine, so you can jump to any date's material below.</p>
+      </div>
+      <div class="grid g3">
+        <div class="card"><span class="tag">27/07 – 29/07</span><h3>NLP foundations</h3><p>What NLP is, the AI⊃ML⊃DL⊃NLP nesting, task taxonomy, Turing test, ELIZA, machine translation history, POS/production rules, applications list.</p></div>
+        <div class="card"><span class="tag amber">03/08 – 18/08</span><h3>Text engineering</h3><p>Tokenization units, N-gram-of-characters formula, regex operators, CoNLL/SSF annotation formats, substitution with regex.</p></div>
+        <div class="card"><span class="tag plum">11/08 – 17/08</span><h3>Formal machinery</h3><p>Finite-state automata (DFA/NFA), the D-RECOGNIZE algorithm, morphology (inflectional/derivational), FSTs, the fox→foxes e-insertion example.</p></div>
+        <div class="card"><span class="tag">19/08 – 01/09</span><h3>Statistical language modeling</h3><p>Chain rule → N-gram MLE, sparsity, Laplace/Add-k, Good-Turing (fully worked), Witten-Bell, Katz backoff, Kneser-Ney, interpolation, Zipf's law.</p></div>
+        <div class="card" style="grid-column:span 2;"><span class="tag amber">last page</span><h3>Byte-Pair Encoding</h3><p>Subword tokenization as a fix for the vocabulary problem N-grams and word-level tokenizers both suffer from — a nice bridge to modern (transformer-era) preprocessing.</p></div>
+      </div>
+    </section>
+
+    <!-- FOUNDATIONS -->
+    <section id="foundations">
+      <div class="section-head">
+        <div class="eyebrow">27/07 – 28/07</div>
+        <h2>What NLP is, and where it sits</h2>
+      </div>
+
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag">Your definition</span>
+          <h3>Natural language ≠ generated by a system</h3>
+          <p>Your note is precise: natural language is <em>spoken by human beings</em> — written or spoken — as opposed to an artificial/formal language (like a regex or a programming language) that a system defines. NLP is the field that gets computers to handle that naturally-occurring, messy signal.</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Disfluency</span>
+          <h3>Filler words = disfluency</h3>
+          <p>"hmm", "uh", "haan" — your note calls these <em>pct phrases</em> (parenthetical/filler phrases). The book's term is exactly this: <b>disfluencies</b>, split into <em>fillers/filled pauses</em> (uh, um) and <em>fragments</em> (broken-off words like "main-"). They're sometimes ungrammatical, but Stolcke & Shriberg (1996) found treating "uh" as a real word actually <em>improves</em> next-word prediction — because a disfluency itself is informative about what's coming.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">Nesting diagram</span>
+        <h3>AI ⊃ ML ⊃ DL, with NLP overlapping ML and DL</h3>
+        <p style="margin-bottom:8px;">Your Venn diagram is the standard one: <b>AI</b> is the broadest goal (build systems that act intelligently); <b>ML</b> is the subset of AI that learns patterns from data instead of being hand-coded; <b>DL</b> is the subset of ML using multi-layer neural networks. <b>NLP</b> is not nested inside ML/DL — it's an application area (language) that increasingly <em>uses</em> ML/DL as its tools, which is why your diagram draws it overlapping rather than fully contained.</p>
+        <div class="formula">ML → learns a <em>feature</em> mapping from labeled examples (train / test split)<br>DL → learns features automatically via layered representations<br>Inference → the trained model's act of <em>prediction</em> on new input<br>Inductive bias → the built-in assumptions a model makes before seeing any data</div>
+      </div>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag">Tokenizer, pretrained</span>
+          <h3>Converts text → processable units, returns token-ids</h3>
+          <p>This is the modern (subword-era) framing: a pretrained tokenizer doesn't just split on whitespace — it maps each piece to an integer id from a fixed vocabulary, which is what a neural model actually consumes. See <a href="#bpe">Byte-Pair Encoding</a> for how that vocabulary gets built.</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Computational Linguistics (CL)</span>
+          <h3>The scientific side; NLP is the engineering side</h3>
+          <p>Your note: "CL → Analysis of language." The distinction that's usually drawn: <b>CL</b> asks what computational methods reveal <em>about</em> language (a linguistics question); <b>NLP</b> asks how to build systems that <em>do</em> something useful with language (an engineering question). In practice the two communities share almost all their tools.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">LLM input modalities</span>
+        <h3>Written text · spoken text/speech · visual (image/video)</h3>
+        <p>Your bracket lists exactly the three input modalities a modern large model can be built to consume. "ASR output/transcript → text" is the bridge for the speech modality: an Automatic Speech Recognition system turns audio into a transcript, and everything downstream (tagging, parsing, understanding) runs on that transcript exactly as if it had been typed. This is also why the note "transcript → spoken text" appears right where it does — it's defining vocabulary before the Turing Test discussion that follows.</p>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="history">
+      <div class="section-head">
+        <div class="eyebrow">28/07 – 29/07</div>
+        <h2>Turing, ELIZA, and machine translation's false start</h2>
+      </div>
+
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag">Turing Test</span>
+          <h3>An evaluator judges by transcript alone</h3>
+          <p>Your note is correct: the evaluator can't see either party, only read the <em>transcript</em>, and must decide which side is human. It's a test of indistinguishability in <em>conversation</em>, not a test of "true" intelligence or understanding — a distinction worth having ready for an exam ("what does the Turing Test actually measure?").</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">ELIZA (1966)</span>
+          <h3>Joseph Weizenbaum, MIT — the first well-known chatbot</h3>
+          <p>ELIZA simulated a Rogerian (person-centered) psychotherapist. Textbook §2.1.6 shows exactly how: it's a cascade of regex <b>substitutions</b>. "my" → YOUR, "I'm" → YOU ARE, then pattern-triggered replies like <code>s/.* all .*/IN WHAT WAY/</code>. It has zero understanding — it reflects your sentence back using surface pattern matching, which is precisely why it's a perfect illustration of regex substitution with memory (the <code>\1</code> register trick), not of language understanding.</p>
+        </div>
+      </div>
+
+      <div class="fix">
+        <b>Worth double-checking with your instructor:</b> your note dates the first MT system to "1970's." The Georgetown–IBM experiment (the IBM 701 running a Russian→English demo, with a small ~250-word vocabulary and 6 grammar rules) is standardly dated to <b>1954</b>, not the 1970s — it's usually cited as the opening shot of MT research, followed by the 1966 ALPAC report that cut MT funding for years. The "bilingual dictionary + grammar rules" two-part method your note lists (word-to-word translation, then structural rules) is exactly the rule-based MT paradigm that experiment used.
+      </div>
+
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag plum">Grammar rules → POS → chunking → NER</span>
+          <h3>The classical NLP pipeline, in your own worked example</h3>
+          <p>Your Hindi→English example ("mein ghar gaya" → Pronoun-Noun-Verb → "I went home" → Pronoun-Verb-Noun) is showing exactly why word-to-word translation alone fails: languages differ in word order, so a translation system needs POS tags and structural (grammar) rules on top of a dictionary — not just substitution.</p>
+        </div>
+        <div class="card">
+          <span class="tag plum">Production rules & constituency trees</span>
+          <h3>S → NP VP, NP → DET? JJ? NN | PRP, VP → V NP</h3>
+          <p>This is context-free grammar notation (formalized in Ch. 12 of the book): a sentence (S) rewrites into a noun phrase and verb phrase; a noun phrase is an optional determiner, optional adjective, then a noun, <em>or</em> a pronoun; a verb phrase is a verb followed by a noun phrase. Your tree for "I want home" (PRP → I; V → want; NP → NN → home) is one legal derivation from those rules — this structure is called a <b>constituency tree</b>, and the whole rule-set is called an <b>AST-generating grammar</b> in the parsing sense your note uses (Abstract Syntax Tree, borrowed from compiler terminology but applied to sentence structure).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASKS -->
+    <section id="tasks">
+      <div class="section-head">
+        <div class="eyebrow">27/07 & 06/08</div>
+        <h2>The four-way task taxonomy</h2>
+        <p>Your notes name four kinds of NLP tasks, then later (page 6) work through the sequence-labeling ones in detail with a real bilingual example. This is the single most useful organizing idea in the whole notebook — almost everything else in the course is an instance of one of these four.</p>
+      </div>
+
+      <div class="grid g4">
+        <div class="card"><span class="tag">1</span><h3>Statistical LM</h3><p>Next-token prediction: given a history, predict the next word. This is exactly the N-gram chapter — see <a href="#ngram">N-gram language models</a>.</p></div>
+        <div class="card"><span class="tag amber">2</span><h3>Text/sequence classification</h3><p>One label for the <em>whole</em> input. Example: sentiment analysis, spam detection, language identification.</p></div>
+        <div class="card"><span class="tag plum">3</span><h3>Sequence labeling</h3><p>One label <em>per token</i>. POS tagging is the classic case: your example tags every word of "I am going to ghar bahut dino baad" with its language (Eng/Hindi) — that's code-switching language identification done as sequence labeling.</p></div>
+        <div class="card"><span class="tag">4</span><h3>Sequence generation</h3><p>Output is itself a sequence, not a label. Machine translation and transliteration (हिंदी → "Namaste") are both sequence generation.</p></div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag amber">Span identification, worked</span>
+        <h3>BIO tagging: (The tall kid) (is going) (to) (the school)</h3>
+        <p style="margin-bottom:10px;">Your notation <code>B-NP, I-NP, I-NP, B-VP, I-VP, B-PP, I-PP, I-PP</code> is the standard <b>BIO scheme</b> (Beginning / Inside / Outside) used for chunking: B- marks the first token of a phrase (a <em>constituent</em>, in your word), I- marks every token continuing that same phrase. This turns "find the phrase boundaries" into a per-token classification problem — i.e., it converts span identification into sequence labeling, which is exactly why it's grouped with POS tagging in your notes.</p>
+        <div class="formula">The&nbsp;&nbsp;&nbsp;&nbsp;tall&nbsp;&nbsp;kid&nbsp;&nbsp;&nbsp;is&nbsp;&nbsp;&nbsp;&nbsp;going&nbsp;&nbsp;to&nbsp;&nbsp;&nbsp;the&nbsp;&nbsp;&nbsp;school<br>B-NP&nbsp;&nbsp;I-NP&nbsp;&nbsp;I-NP&nbsp;&nbsp;B-VP&nbsp;&nbsp;I-VP&nbsp;&nbsp;&nbsp;B-PP&nbsp;&nbsp;I-PP&nbsp;&nbsp;I-PP</div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">Why tag-space explodes</span>
+        <h3>|tags| = |V_E × V_H|^(sequence length)</h3>
+        <p>Your page 7 derivation is about the combinatorics of sequence labeling when each position can be tagged with one of many classes (here, a cross of English-vocabulary tags and Hindi-vocabulary tags, sizes ~10,000 each). For a sequence of length n, the number of <em>possible tag sequences</em> is (number of tag choices)ⁿ — exponential in sentence length. That's precisely the motivation for <b>k-beam search</b> right below it in your notes: instead of enumerating every one of those exponentially many sequences, keep only the top-k highest-scoring partial sequences at each step and extend only those. This is a greedy/heuristic relaxation of the exact Viterbi search you'll meet again in POS tagging (Ch. 5) and in the "bag generation" exercise for N-grams.</p>
+      </div>
+    </section>
+
+    <!-- APPLICATIONS -->
+    <section id="applications">
+      <div class="section-head">
+        <div class="eyebrow">29/07</div>
+        <h2>Applications survey</h2>
+        <p>Your list (code assistant, chatbot/virtual assistant, MT, ASR, TTS, summarization, speaker ID, sentiment analysis, text classification) is a menu of the four task types above, wearing different product names. Two entries are worth a slightly closer look because they're easy to mix up on an exam.</p>
+      </div>
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag">Transliteration ≠ Translation</span>
+          <h3>हिंदी → "Namaste" is sound, not meaning</h3>
+          <p>Transliteration rewrites the <em>letters/sounds</em> of a word into another script — तमस्ते → Namaste keeps the pronunciation but changes the alphabet. Nothing about meaning is involved; "computer" → कंप्यूटर (a borrowed/Romanized word written in Devanagari) is the reverse direction. Translation, by contrast, maps <em>meaning</em> across languages and can use entirely different words.</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Language Identification (LID)</span>
+          <h3>input text → which language</h3>
+          <p>A single-label text classification task (one of the "four types" above). Note how it differs from the code-switch tagging example in the Tasks section: LID is <em>document/utterance-level</em> classification (one label for the whole input); tagging each word's language in a mixed-language sentence is <em>token-level</em> sequence labeling. Same underlying idea, different granularity — a distinction examiners love to test.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section id="pipeline">
+      <div class="section-head">
+        <div class="eyebrow">07/08</div>
+        <h2>The NLP pipeline & how data gets split</h2>
+      </div>
+      <div class="chain">
+        <div class="step"><span class="t">1 Data collection</span>raw corpus / corpora</div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="t">2 Preprocessing</span>tokenize, normalize</div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="t">3 Vectorize</span>TF-IDF / count vectors</div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="t">4 Train a model</span>fit parameters</div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="t">5 Evaluate</span>score on held-out data</div>
+      </div>
+      <div class="grid g3" style="margin-top:6px;">
+        <div class="card"><span class="tag">Train</span><h3>Fits the model's parameters</h3><p>The N-gram counts, or the network weights, come only from here.</p></div>
+        <div class="card"><span class="tag amber">Dev / Validation</span><h3>Same distribution as training</h3><p>Used to tune hyperparameters (like a smoothing constant k, or λ interpolation weights) without ever touching final test data.</p></div>
+        <div class="card"><span class="tag plum">Test (unseen)</span><h3>Out-of-distribution check</h3><p>Your note flags this precisely: a good test set should include some out-of-distribution (OOD) material, because real deployment data won't match training data perfectly — this is the whole lesson of the Shakespeare-vs-WSJ perplexity comparison in the N-gram chapter (§4.3.1).</p></div>
+      </div>
+    </section>
+
+    <!-- TOKENIZATION -->
+    <section id="tokenization">
+      <div class="section-head">
+        <div class="eyebrow">03/08</div>
+        <h2>Tokenization</h2>
+        <p>Your definition — "breaking a sentence into words, breaking a longer string into smaller units" — is exactly Ch. 3's definition (§3.9): tokenization/word segmentation is separating running text into meaningful pieces.</p>
+      </div>
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag">Granularity ladder</span>
+          <h3>character → word → sentence → paragraph → document → corpus</h3>
+          <p>Your arrow correctly labels the two ends: character-level is <b>fine-grained</b>, document/corpus-level is <b>coarse-grained</b> (your word "coarse-granularity"). Note: <em>corpus</em> is singular, <em>corpora</em> is plural — your correction on the page ("corpus/corpora") is catching exactly the distinction Ch. 4 relies on constantly ("the Brown corpus", "two popular corpora").</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">N-gram-of-length formula</span>
+          <h3>#N-grams = len(unit) − N + 1</h3>
+          <p>Your worked check: "You are a student." has 5 word-tokens (including the period), so for N=2: 5−2+1 = 4 bigrams. This is the same counting logic behind character N-grams: the word "boy" (3 letters) has 3−2+1 = 2 character-bigrams (bo, oy); "girl" (4 letters) has 4−2+1 = 3.</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">TF-IDF & count vectors</span>
+        <h3>How tokens become numbers for a model</h3>
+        <p>These are the two classic pre-neural ways of turning a document into a feature vector for the "convert to numeric format" pipeline step: a <b>count vector</b> just tallies how many times each vocabulary word appears; <b>TF-IDF</b> (term-frequency × inverse-document-frequency) down-weights words that appear in almost every document (like "the") and up-weights words that are frequent in <em>this</em> document but rare elsewhere — a first pass at separating stopwords from informative words, the same idea your Zipf's-law diagram makes visual later (see <a href="#zipf">Zipf's law</a>).</p>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <span class="tag">Sub-word units of speech</span>
+        <h3>IPA & syllables — and why "." is hard</h3>
+        <p>IPA (International Phonetic Alphabet) gives one symbol per distinct sound; a <b>syllable</b> is the unit of speech that can be pronounced on its own in one breath-push. Your note on punctuation tokenization is the key practical problem: a comma can pause a list, a semicolon joins two independent clauses (each with its own verb), and a period both ends a sentence <em>and</em> marks a decimal point or abbreviation — which is exactly why you need <b>regex</b>, not a fixed rule, to tell them apart (Ch. 3 §3.9 makes the same point with "$62.625" and "Mr. Sherwood").</p>
+      </div>
+    </section>
+
+    <!-- REGEX -->
+    <section id="regex">
+      <div class="section-head">
+        <div class="eyebrow">04/08 – 18/08</div>
+        <h2>Regular expressions</h2>
+        <p>This whole stretch of your notes is Chapter 2, §2.1, reorganized as a reference sheet. Below is the same material grouped for quick recall, with your own examples kept.</p>
+      </div>
+
+      <div class="twrap">
+        <table class="data">
+          <thead><tr><th>Symbol</th><th>Meaning</th><th>Your example</th></tr></thead>
+          <tbody>
+            <tr><td>+</td><td>one or more occurrences</td><td><code>a+</code> → {a, aa, aaa, …}</td></tr>
+            <tr><td>*</td><td>zero or more occurrences</td><td><code>a*</code> → {ε, a, aa, …}</td></tr>
+            <tr><td>?</td><td>zero or one occurrence</td><td><code>a?</code> → {ε, a}</td></tr>
+            <tr><td>{m,n}</td><td>m to n occurrences (inclusive)</td><td><code>a{2,4}</code> → {aa, aaa, aaaa}</td></tr>
+            <tr><td>[abc]</td><td>disjunction — one of a set of characters</td><td><code>[abcd]</code> → {a,b,c,d}</td></tr>
+            <tr><td>[abcd]+</td><td>one-or-more from a set, incl. all combinations</td><td>a, b, …, aa, bb, …, ab, ac, …</td></tr>
+            <tr><td>^</td><td>start-of-line anchor, or negation inside [ ]</td><td><code>[^a-z]</code> = "does not contain a–z"</td></tr>
+            <tr><td>$</td><td>end-of-line anchor</td><td>—</td></tr>
+            <tr><td>( )</td><td>grouping, to force precedence</td><td><code>(ab)+</code> → ab, abab, ababab…</td></tr>
+            <tr><td>[a-z]</td><td>range</td><td>a through z</td></tr>
+            <tr><td>[0-9]</td><td>range</td><td>0 through 9</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag">Why grouping matters</span>
+          <h3><code>ab+</code> vs. <code>(ab)+</code></h3>
+          <p>Exactly your example: <code>ab+</code> means "a, then one-or-more b's" → ab, abb, abbb… The <b>+</b> binds only to the character right before it. <code>(ab)+</code> means "one-or-more repetitions of the whole pair ab" → ab, abab, ababab… Parentheses force the repetition operator to apply to a group instead of a single symbol — this is the book's "operator precedence" issue (Ch. 2 §2.1.2): counters bind tighter than sequences, so without parentheses you get the wrong scope.</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Escaping special characters</span>
+          <h3><code>\+</code> to match a literal "+"</h3>
+          <p>Since <code>+</code>, <code>*</code>, <code>.</code> etc. are operators, matching the literal character requires a backslash: <code>\+</code> matches "+" itself, <code>\*</code> matches "*". Your greedy-vs-non-greedy example nails the key gotcha: <code>^.+.$</code> is <b>greedy</b> — it expands as far as possible, so on "I am at SVNIT, SURAT. I have taken the boring NLP class." it will match from the first character all the way to the <em>last</em> period, swallowing both sentences, because <code>.</code> matches anything including other periods. A non-greedy quantifier (commonly written <code>+?</code>) stops at the <em>first</em> match instead.</p>
+        </div>
+      </div>
+
+      <div class="grid g3" style="margin-top:14px;">
+        <div class="card"><span class="tag plum">Character classes</span><h3><code>\d \D \w \W \s \S</code></h3><p><code>\d</code>=[0-9], <code>\D</code>=non-digit, <code>\w</code>=alphanumeric+underscore, <code>\W</code>=non-alphanumeric, <code>\s</code>=whitespace, <code>\S</code>=non-whitespace. Note <code>\S+ ≠ \w+</code>: <code>\S</code> also matches punctuation, <code>\w</code> doesn't.</p></div>
+        <div class="card"><span class="tag plum">Anchors, refined</span><h3><code>^[a-z]</code> vs <code>[^a-z]</code></h3><p>Caret <em>outside</em> brackets at the start of a pattern = "starts with"; caret as the <em>first character inside</em> brackets = negation ("does not contain"). Same symbol, opposite jobs depending on position — a classic trick question.</p></div>
+        <div class="card"><span class="tag plum">Unicode block</span><h3>Devanagari & ASCII</h3><p>ASCII covers 256 characters — not enough for Devanagari (Hindi's script), which needs its own Unicode block. Your example "हिंदी → only captures ह" if you forget <code>\w+</code>/the Devanagari range, because "ी" (a vowel-sign / matra) isn't in the plain alphanumeric character class by default — you must explicitly include the Unicode range.</p></div>
+      </div>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag">Search vs. match</span>
+          <h3>Both return an index — but scope differs</h3>
+          <p><code>re.match(pattern, x)</code> only checks the pattern against the <em>start</em> of the string; <code>re.search(pattern, x)</code> scans the whole string for the first occurrence anywhere. Your example: for <code>x="abcd"</code>, <code>re.match('b+', x)</code> fails (x doesn't start with b), but <code>re.search('b+', x)</code> succeeds.</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">findall & groups</span>
+          <h3>Extracting an email's parts</h3>
+          <p>Your pattern <code>^(\w+)@(\w+)\.(\w+)$</code> against "abc@example.com" — <code>findall</code> returns a list of tuples, one per match, each tuple holding the captured groups: <code>[('abc','example','com')]</code>. Each parenthesized group in the pattern becomes one slot in the tuple.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">Substitution needs a function, not another regex</span>
+        <h3>Why <code>sub('(am|are)','were',x)</code> is wrong for context-sensitive replacement</h3>
+        <p style="margin-bottom:8px;">Your worked example is a great catch: to turn "I am going" into "we were going" <em>and</em> "you are going" into "we were going", the <em>pattern</em> to search for can be one regex, <code>(am|are)</code> — but the <em>replacement</em> can't be a single fixed string, since both need to become "were" while other am/are's elsewhere might need different treatment. Python's <code>re.sub</code> solves this by accepting a callback function instead of a literal string:</p>
+        <div class="formula">def repl(match_object):<br>&nbsp;&nbsp;if match_object.group(1) == 'am': return 'was'<br>&nbsp;&nbsp;elif match_object.group(1) == 'are': return 'were'<br>&nbsp;&nbsp;else: return None<br><br>re.sub('(am|are)', repl, x)</div>
+        <p style="margin-top:8px;">This exact mechanism — pattern match, then a per-match decision — is what powers ELIZA's cascade of substitutions in Ch. 2 §2.1.6.</p>
+      </div>
+    </section>
+
+    <!-- FORMATS -->
+    <section id="formats">
+      <div class="section-head">
+        <div class="eyebrow">05/08 – 10/08</div>
+        <h2>Annotation formats: why we bracket, and how corpora get stored</h2>
+      </div>
+      <div class="card">
+        <span class="tag">Why brackets/tags at all</span>
+        <h3>Force precedence → readability → eliminate ambiguity</h3>
+        <p>Your three-word chain is the whole justification: an annotation scheme (like POS tags or XML-style brackets) exists purely to remove ambiguity about what modifies what, and to make a corpus machine-readable in a structured, unambiguous way.</p>
+      </div>
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag amber">SSF (Shakti Standard Format)</span>
+          <h3>&lt;sentence id='1'&gt; ... &lt;/sentence&gt;, tab-separated</h3>
+          <p>Each token gets a line number, the token itself, and its POS tag, tab-delimited, inside an SSF/CoNLL-style block:</p>
+          <div class="formula">1&nbsp;&nbsp;I&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRP<br>2&nbsp;&nbsp;am&nbsp;&nbsp;&nbsp;VAUX<br>3&nbsp;&nbsp;going&nbsp;VM<br>4&nbsp;&nbsp;home&nbsp;&nbsp;NN<br>5&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PUNC</div>
+        </div>
+        <div class="card">
+          <span class="tag plum">CoNLL format</span>
+          <h3>One token per line, blank line = sentence boundary</h3>
+          <p>CoNLL drops the explicit XML tags and index numbers of SSF; a blank line alone signals where one sentence ends and the next begins. It's the format almost every modern POS/NER dataset ships in, because it's trivial to stream line-by-line.</p>
+          <div class="formula">I&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRP<br>study&nbsp;VM<br>at&nbsp;&nbsp;&nbsp;&nbsp;PREP<br>SVNIT&nbsp;NNP<br>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PUNC<br><span class="comment">(blank line = new sentence)</span></div>
+        </div>
+      </div>
+      <p style="font-size:12.8px;color:var(--muted);margin-top:10px;">Tag key from your notes: <code>PRP</code>=pronoun, <code>VAUX</code>=auxiliary verb, <code>VM</code>=main verb, <code>NN</code>=common noun, <code>NNP</code>=proper noun, <code>PREP</code>=preposition, <code>PUNC</code>=punctuation.</p>
+    </section>
+
+    <!-- FSA -->
+    <section id="fsa">
+      <div class="section-head">
+        <div class="eyebrow">19/07(ELIZA) & 11/08</div>
+        <h2>Finite-state automata</h2>
+        <p>Your notes jump straight to "sheep talk" and D-RECOGNIZE — this is Chapter 2 §2.2 verbatim, and it's the mechanism behind ELIZA's "infinite state machine" note on page 19.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">The sheep language</span>
+        <h3>baa!, baaa!, baaaa!, … → regex /baa+!/</h3>
+        <div class="fsa-row">
+          <div class="fsa-node final" style="border-color:var(--muted);">q0</div>
+          <div class="fsa-arrow">b<span>→</span></div>
+          <div class="fsa-node">q1</div>
+          <div class="fsa-arrow">a<span>→</span></div>
+          <div class="fsa-node">q2</div>
+          <div class="fsa-arrow">a<span>→</span></div>
+          <div class="fsa-node">q3 <span style="font-size:9px;">(a↻)</span></div>
+          <div class="fsa-arrow">!<span>→</span></div>
+          <div class="fsa-node final">q4</div>
+        </div>
+        <p>M = (Q, Σ, δ, q₀, F) — exactly your notation: <b>Q</b> states, <b>Σ</b> input alphabet, <b>δ</b> the transition function, <b>q₀</b> the start state, <b>F</b> the set of final/accepting states. State q3 has a self-loop on "a" (any number of extra a's), and only q4 (double circle) is accepting.</p>
+      </div>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag amber">Deterministic vs. non-deterministic</span>
+          <h3>Same language, different transition tables</h3>
+          <p>A <b>DFA</b> has at most one legal transition per (state, symbol) pair — the machine never has to guess. An <b>NFA</b> can have several transitions for the same (state, symbol) pair (or ε-transitions that move without consuming input), so recognizing a string may require trying multiple paths — exactly the "agenda" search (LIFO/depth-first or FIFO/breadth-first) the book's ND-RECOGNIZE algorithm implements. Every NFA has an equivalent DFA (possibly with exponentially more states).</p>
+        </div>
+        <div class="card">
+          <span class="tag plum">D-RECOGNIZE, in words</span>
+          <h3>Walk the tape, follow the transition table, or reject</h3>
+          <p>Start at state q₀ and the first tape cell. Loop: if input is exhausted, accept iff current state is final; else look up (current-state, current-symbol) in the transition table — if that cell is empty, reject; otherwise move to the new state and advance the tape pointer by one. This is a linear-time algorithm, and it's the "correct word identifier" your page 22 note describes: FSA-based dictionary lookup accepts exactly the strings that are legal words.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag">Fail/sink state</span>
+        <h3>Every "empty" table cell is really an arc to a trap state</h3>
+        <p>Conceptually, any transition-table gap points to an implicit <b>fail state</b> q_fail that swallows the rest of the input and never accepts — this is what your page 21 arrows converging on a single node ("q_fail") for every illegal (state, input) pair are drawing.</p>
+      </div>
+    </section>
+
+    <!-- MORPHOLOGY -->
+    <section id="morphology">
+      <div class="section-head">
+        <div class="eyebrow">11/08 – 17/08</div>
+        <h2>Morphology & finite-state transducers</h2>
+        <p>This is Chapter 3 in full: parsing (definition), morphological analysis vs. generation, the ASR↔TTS cycle, inflectional vs. derivational morphology, and finally FSTs with the fox→foxes worked example.</p>
+      </div>
+
+      <div class="chain">
+        <div class="step"><span class="t">Text</span>written form</div>
+        <div class="arrow">⇄</div>
+        <div class="step"><span class="t">Speech</span>audio signal</div>
+      </div>
+      <p style="font-size:13px;color:var(--ink-2);margin-top:-4px;">TTS goes text→speech; ASR goes speech→text. Your diagram's cycle is exactly this pair of inverse systems.</p>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag">Parsing (general sense)</span>
+          <h3>Extracting/providing grammatical information about a word</h3>
+          <p><b>Morphological analysis</b>: cats = cat + N + PL (surface form → stem + features). <b>Morph generation</b> is the reverse: cat + N + PL → cats. They are inverse operations — and because an FST maps between two tapes, the <em>same transducer</em> run forward does generation and run backward (inverted) does analysis. This is the book's "FST as translator" idea (§3.4), and it's why your notes list analysis and generation as "reverse of each other".</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Inflectional vs. derivational</span>
+          <h3>Category stays the same vs. category can change</h3>
+          <p><b>Inflectional</b>: walk → walks/walking/walked — always still a verb, meaning doesn't fundamentally change, just grammatical features (tense, person, number) do. <b>Derivational</b>: nation (N) → national (Adj) → nationalize (V) → nationalization (N) — each step can change the part of speech, and the meaning shift is less predictable. Your "nation→national→nationalize→nationalization" chain is the textbook's exact nominalization example pattern (§3.1.2) run through several suffixes: -al, -ize, -ation.</p>
+        </div>
+      </div>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag plum">Morpheme, root, affix</span>
+          <h3>cats = cat (stem/root) + -s (suffix, inflection)</h3>
+          <p>A <b>morpheme</b> is the smallest meaning-bearing unit. <b>unhappy</b> = un- (prefix, derivation) + happy (root). Your rope example is a nice edge case: "rope" itself is a free root that can be a noun <em>or</em> a verb, and "roped" (rope + -ed) shows a regular past-tense inflection stacks on top of either reading.</p>
+        </div>
+        <div class="card">
+          <span class="tag plum">Free vs. bound morphemes</span>
+          <h3>cat can stand alone; -s cannot</h3>
+          <p>A <b>free morpheme</b> (cat) is a word by itself. A <b>bound morpheme</b> (-s, un-, -tion) never occurs alone — "it carries no meaning on its own, only grammatical information," exactly as your note states.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag">Hindi karak (case) system — your grammar table, glossed</span>
+        <h3>8 vibhaktis (case markers), matched to their function</h3>
+        <div class="twrap">
+          <table class="data">
+            <thead><tr><th>Karak (case)</th><th>Marker</th><th>Function</th></tr></thead>
+            <tbody>
+              <tr><td>Karta</td><td>ne</td><td>subject / nominative — the doer</td></tr>
+              <tr><td>Karma</td><td>ko</td><td>object / accusative — the receiver of the action</td></tr>
+              <tr><td>Karan</td><td>se</td><td>instrumental — "by means of"</td></tr>
+              <tr><td>Sampradan</td><td>ke liye</td><td>dative — "for the sake of"</td></tr>
+              <tr><td>Apadan</td><td>se (separation sense)</td><td>ablative — movement away from</td></tr>
+              <tr><td>Sambandh</td><td>ka / ki / ke</td><td>genitive — possession ("of")</td></tr>
+              <tr><td>Adhikaran</td><td>mein / par</td><td>locative — "in / on"</td></tr>
+              <tr><td>Sambodhan</td><td>he / are</td><td>vocative — direct address</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:8px;font-size:12.8px;color:var(--muted);">This connects to morphology because in Hindi these are often realized as bound postpositional case-markers attached to or following the noun — a morphologically rich system, the same kind of complexity the book uses Turkish and Arabic to illustrate (§3.1: Turkish's 40,000 verb forms; Arabic's root-and-pattern templates).</p>
+      </div>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag amber">Lemmatization vs. stemming</span>
+          <h3>Both reduce a word — differently</h3>
+          <p><b>Lemmatization</b> maps a word to its dictionary headword (lemma) using real morphological/grammatical knowledge: better → good, ran → run. <b>Stemming</b> crudely chops off affixes with rules, without checking the result is a real word: universal, university, universe might all stem to "univers" — the book's Porter stemmer (§3.8) is the classic example, and it explicitly commits errors like organization→organ precisely because it has no lexicon, just cascaded rewrite rules.</p>
+        </div>
+        <div class="card">
+          <span class="tag plum">FSA for word validity — colour/color</span>
+          <h3>Accepting both British and American spelling</h3>
+          <p>Your states 0→1→2→3→4→5 spelling out c-o-l-o-u?-r captures "colour" and "color" with one optional-u branch — the same "?" operator from regex, now drawn as two parallel arcs (one via "u", one skipping straight to "r") merging back into a shared final state.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag">The FST core idea</span>
+        <h3>Two tapes, not one — input maps to output</h3>
+        <div class="formula">
+          FSA = recognizer &nbsp;→&nbsp; one tape, accepts a language<br>
+          FST = transducer &nbsp;→&nbsp; two tapes (input, output), defines a <em>relation</em> between two languages
+        </div>
+        <p style="margin-top:10px;">Your four uses of an FST match Ch. 3 §3.4 exactly: <b>recognition</b> (accept/reject a pair of strings), <b>generation</b> (produce output pairs), <b>translation</b> (read one string, output another), <b>relating sets</b>. And the two closure properties that make FSTs practical: <b>inversion</b> (swap input/output tapes — turns a parser into a generator for free) and <b>composition</b> (chain two transducers into one, T₁∘T₂).</p>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag amber">Worked: cats and fox→foxes, with the intermediate tape</span>
+        <h3>Why you need a THIRD tape, not just lexical and surface</h3>
+        <p style="margin-bottom:8px;">Your three tapes — <em>surface</em> (cats), <em>intermediate</em> (cat^s#), <em>lexical</em> (cat+N+PL) — are exactly Fig. 3.12–3.16 of the book. The lexicon transducer maps lexical ⇄ intermediate (concatenating morphemes with boundary markers ^ and #); a separate <b>orthographic-rule</b> transducer maps intermediate ⇄ surface, handling spelling changes.</p>
+        <div class="formula">
+          Lexical:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fox +N +Pl<br>
+          Intermediate: fox ^ s #<br>
+          Surface:&nbsp;&nbsp;&nbsp;&nbsp;fox e s&nbsp;&nbsp;<span class="comment">← e-insertion rule fires here</span>
+        </div>
+        <p style="margin-top:8px;">The <b>e-insertion rule</b>: insert e on the surface tape whenever the lexical tape ends a morpheme in x/s/z and the next morpheme is the plural -s. Without it, "fox+s" would surface as the illegal "foxs". "cats", by contrast, needs no insertion (cat ends in t), so the intermediate and surface tapes coincide once the boundary markers are stripped.</p>
+      </div>
+    </section>
+
+    <!-- NGRAM -->
+    <section id="ngram">
+      <div class="section-head">
+        <div class="eyebrow">19/08 →</div>
+        <h2>N-gram language models</h2>
+        <p>Your derivation is the book's Chapter 4, §4.2, compressed to the essential three steps — I've expanded the shorthand back out.</p>
+      </div>
+
+      <div class="chain">
+        <div class="step"><span class="t">1 Chain rule (exact)</span>P(x₁x₂x₃) = P(x₁)P(x₂|x₁)P(x₃|x₁,x₂)</div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="t">2 Sparsity problem</span>P(xᵢ|x₁…xᵢ₋₁) needs C(x₁…xᵢ) which is almost always 0</div>
+        <div class="arrow">→</div>
+        <div class="step"><span class="t">3 Markov fix</span>approximate with only the last N−1 words</div>
+      </div>
+
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag">Your die-roll worked example</span>
+          <h3>P(X=1,Y=3) = 1/36 — confirms joint = count / total</h3>
+          <p>For two independent die rolls, only one of the 36 equally-likely (X,Y) outcomes has X=1,Y=3, so P(X=1,Y=3)=1/36 exactly matches your formula P(X=x,Y=y)=C(X=x,Y=y)/ΣC(X=x′,Y=y′). Then <b>marginalization</b> (page 31) — summing a joint distribution over one variable to recover the other's marginal — gives P(X=1)=Σ_y P(X=1,Y=y)=6×(1/36)=1/6, exactly the unconditional probability of rolling a 1. This is the probability-theory groundwork the whole N-gram chapter is built on.</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">&lt;s&gt;/&lt;/s&gt; padding rule</span>
+          <h3>For an N-gram model, pad with (N−1) BOS and (N−1) EOS</h3>
+          <p>Bigram: one &lt;s&gt; before, one &lt;/s&gt; after. Trigram: two &lt;s&gt;'s before, two &lt;/s&gt;'s after — so P(w₁|&lt;s&gt;&lt;s&gt;) is defined for the very first word. This matches the book's footnote in §4.2 exactly: without a symmetric end token, sentence probabilities of a given length would sum to 1 and the whole language's probability would be infinite.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">MLE = relative frequency</span>
+        <h3>P(wᵢ | wᵢ₋₂,wᵢ₋₁) = C(wᵢ₋₂ wᵢ₋₁ wᵢ) / C(wᵢ₋₂ wᵢ₋₁)</h3>
+        <p>Your page 33 "max P(wᵢ|w₁…w_{i-1})" framing — picking the highest-probability next word at each step to build "The → car → …" — is describing <b>greedy decoding</b>: generate text by always taking the argmax next word under the N-gram model. It's cheap but not optimal (true optimal-sequence search needs Viterbi, same idea as k-beam search from the Tasks section).</p>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag">The motivating zero-count example</span>
+        <h3>"The book is on the table" — but C(on the table) = 0</h3>
+        <p>This is the whole reason smoothing exists (book §4.5, opening paragraph): even a perfectly grammatical, common-sounding trigram can have zero count in a finite training corpus, which would zero out the probability of an entire sentence under raw MLE. Every technique in the next section is a different answer to "what do we do about that zero?"</p>
+      </div>
+    </section>
+
+    <!-- SMOOTHING -->
+    <section id="smoothing">
+      <div class="section-head">
+        <div class="eyebrow">24/08 – 01/09</div>
+        <h2>The smoothing zoo</h2>
+        <p>Your notes cover, in order: Add-1, Add-k (with grid search), discounting, Witten-Bell, Good-Turing (fully worked with real numbers!), Katz backoff, absolute discounting, and Kneser-Ney. Each is a refinement of the one before — read them in this order and the whole family clicks into place.</p>
+      </div>
+
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag">Add-1 (Laplace)</span>
+          <h3>P(wᵢ|wᵢ₋₁) = [C(wᵢ₋₁wᵢ)+1] / [C(wᵢ₋₁)+V]</h3>
+          <p>Add one to every count so nothing is ever exactly zero; compensate the denominator by +V (vocabulary size) so probabilities still sum to 1. Your worked number: C(want→to)=608 out of C(want)=1,000,000 gives raw MLE P=0.0003; with add-1 and V≈100,000, it becomes 609/1,000,100 ≈ 0.0000309969 ≈ 0.000031 = 3.1×10⁻⁵ — barely moved, because V is tiny relative to a huge corpus here. (With a small corpus, as in the textbook's Berkeley Restaurant example, add-1 moves probabilities <em>drastically</em> — see the Field Guide's smoothing section for that contrast.)</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Add-k, tuned by grid search</span>
+          <h3>P(wᵢ|wᵢ₋₁) = [C(wᵢ₋₁wᵢ)+k] / [C(wᵢ₋₁)+kV], 0&lt;k&lt;1</h3>
+          <p>Add-1 over-corrects when V is large; add a smaller fraction k instead. Your recipe for choosing k is textbook hyperparameter search: sweep <code>kᵢ = kᵢ₋₁ + 0.05</code> over a grid (not exhaustive, just a fixed step size), evaluate each candidate's smoothed probabilities against the un-smoothed ones or against held-out likelihood, and keep whichever k gives the best score (smallest gap/discrepancy, or highest held-out probability).</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">Discounting — the unifying idea</span>
+        <h3>c′(wᵢ₋₁,wᵢ) = [C(wᵢ₋₁,wᵢ)+1]/[C(wᵢ₋₁)+V×1] × C(wᵢ₋₁,wᵢ)</h3>
+        <p>Every smoothing method can be described as computing an <b>adjusted count</b> c* that's a little smaller than the raw MLE count, freeing up probability mass to give to unseen events. The discount ratio <b>d = c*/c</b> tells you how much of the original count survived. This single idea — steal a little mass from what you've seen, give it to what you haven't — is the throughline connecting every method below.</p>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag">Witten-Bell — the formal (Chen &amp; Goodman) interpolated definition</span>
+        <h3>P_WB(wᵢ|h) = τ(wᵢ|h) + γ(h)·P_WB(wᵢ|h′)</h3>
+        <p style="margin-bottom:8px;">h is the history (context); h′ is that same history with its <em>oldest</em> word dropped — one order shorter. <b>N₁₊(h•)</b> ("N-one-plus") is the number of <em>distinct</em> word types that have ever followed h at least once — this is the γ term's whole job: a context that's historically been followed by many different words is "more open," so more of its probability mass gets reserved for backing off.</p>
+        <div class="formula">
+          N₁₊(h•) = |{wᵢ : C(h,wᵢ) &gt; 0}| &nbsp;<span class="comment">← # distinct continuations ever seen after h</span><br><br>
+          γ(h) = N₁₊(h•) / [N₁₊(h•) + C(h)] &nbsp;<span class="comment">← mass handed down to the shorter history h′</span><br>
+          τ(wᵢ|h) = C(h,wᵢ) / [N₁₊(h•) + C(h)] &nbsp;<span class="comment">← mass kept from this context's own relative frequency</span>
+        </div>
+        <p style="margin:8px 0;">Check: τ(wᵢ|h) summed over all wᵢ, plus γ(h), always equals exactly 1 — so this is a genuine probability distribution, not just a heuristic patch. Substituting γ and τ back in and combining over a common denominator gives the single-line form most courses quote:</p>
+        <div class="formula">P_WB(wᵢ|h) = [C(h,wᵢ) + N₁₊(h•)·P_WB(wᵢ|h′)] / [C(h) + N₁₊(h•)]</div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag amber">Worked example — bigram P_WB(is|learning) on the "ML corpus"</span>
+        <h3>Formal answer: 0.595 &nbsp;vs.&nbsp; your notes' shortcut "+1" version: 0.714</h3>
+        <p style="margin-bottom:8px;">Reusing the corpus from the N-gram section below: C(learning)=5, C(learning,is)=4, N₁₊(learning•)=2 (learning is followed by only <em>is</em> and <em>can</em>). For the recursive base case, take P_WB(is) ≈ its plain unigram MLE, C(is)/N = 4/48 (a common simplification — the "true" base case recurses one level further, to a uniform 1/V zerogram, which most courses skip for hand computation).</p>
+        <div class="formula">
+          τ(is|learning) = C(learning,is) / [N₁₊(learning•)+C(learning)] = 4/(2+5) = 4/7 ≈ 0.5714<br>
+          γ(learning) = N₁₊(learning•) / [N₁₊(learning•)+C(learning)] = 2/7 ≈ 0.2857<br>
+          P_WB(is) ≈ C(is)/N = 4/48 ≈ 0.0833<br><br>
+          P_WB(is|learning) = 0.5714 + 0.2857 × 0.0833 = <b>0.5952</b>
+        </div>
+        <p style="margin-top:8px;">Your class notes' page-38 shortcut — P(wᵢ|h) = [C(h,wᵢ)+1] / [C(h)+N₁₊(h•)] — plugs in the same numbers as (4+1)/(5+2) = 5/7 ≈ <b>0.7143</b>, a visibly different number. That shortcut swaps the recursive γ(h)·P_WB(wᵢ|h′) term for a flat "+1," which makes it fast to hand-compute but is <em>not</em> the textbook-accurate Witten-Bell formula — treat it as a simplified teaching approximation, and use the τ/γ version above if a question asks for "Witten-Bell smoothing" without further qualification.</p>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <span class="tag amber">Good-Turing — your worked numeric example, reproduced exactly</span>
+        <h3>Frequency of frequencies: x,y,z (count 1), a,b (count 2), c (count 3)</h3>
+        <div class="grid g3" style="margin:10px 0;">
+          <div class="card" style="box-shadow:none;"><h3 style="font-size:13px;">N₁ = 3</h3><p>items seen exactly once: x, y, z</p></div>
+          <div class="card" style="box-shadow:none;"><h3 style="font-size:13px;">N₂ = 2</h3><p>items seen exactly twice: a, b</p></div>
+          <div class="card" style="box-shadow:none;"><h3 style="font-size:13px;">N₃ = 1</h3><p>items seen exactly 3×: c</p></div>
+        </div>
+        <div class="formula">
+          Total count N = 1×N₁ + 2×N₂ + 3×N₃ = 3 + 4 + 3 = 10<br><br>
+          c*₁ = (1+1)·N₂/N₁ = (2)(2)/3 = 4/3 ≈ 1.33&nbsp;&nbsp;<span class="comment">← discounted count for a singleton</span><br>
+          c*₂ = (2+1)·N₃/N₂ = (3)(1)/2 = 3/2 = 1.5&nbsp;&nbsp;<span class="comment">← discounted count for a doubleton</span><br><br>
+          Total probability mass reserved for unseen = N₁/N = 3/10 = <b>0.3</b><br>
+          With 2 unseen items {u, v}: P*<sub>GT</sub>(unseen) = 0.3 / 2 = <b>0.15 each</b>
+        </div>
+        <p style="margin-top:10px;">This is the exact mechanism as the book's fish example (bass/catfish unseen, trout/salmon/eel seen once) — same formula, different letters. Two practical snags your notes raise and answer:</p>
+        <ul style="font-size:13.3px;color:var(--ink-2); padding-left:20px; margin:8px 0;">
+          <li><b>When N_{c+1}=0</b> (a gap in the frequency table): either <em>average</em> — replace N_c with N_c ÷ ((next-higher-populated-bin − previous-lower-populated-bin)/2) — or use the "hack" of substituting the nearest higher non-zero N_c in the ratio. The book's more rigorous version of this same fix is <b>Simple Good-Turing</b>: fit log(N_c) = a + b·log(c) by linear regression (since it's linear in log-log space) and read smoothed N_c values off that line instead of the noisy raw counts.</li>
+          <li><b>Large counts stay untouched:</b> above a threshold (Katz suggests k=5), just use c*=c — the empirical count is already trustworthy, and applying discounting to every count would waste effort.</li>
+        </ul>
+      </div>
+
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card">
+          <span class="tag">Katz backoff</span>
+          <h3>Uses a Good-Turing discount d = c*/c, plus a normalizing factor</h3>
+          <p>P_Katz(wᵢ|wᵢ₋₁) = P*(wᵢ|wᵢ₋₁) if the bigram was seen; otherwise α(wᵢ₋₁) × P*(wᵢ) — back off to the unigram, scaled by a normalizer α so the whole distribution still sums to 1. The discounted numerator P* always undercuts raw MLE (P* &lt; P_MLE), which is exactly what frees up the mass α redistributes downward.</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Absolute discounting</span>
+          <h3>Subtract a flat constant d (often 0.75 for English), not a ratio</h3>
+          <p>P_AD(wᵢ|wᵢ₋₁) = max(C(wᵢ₋₁wᵢ)−d, 0)/C(wᵢ₋₁) + λ(wᵢ₋₁)·P_AD(lower order). The book's own empirical observation (§4.9.1) is exactly what motivates this: once you tabulate Good-Turing's c* against raw c, the adjusted counts for c≥2 all sit suspiciously close to "raw count minus about 0.75" — so why not just subtract that constant directly and skip re-estimating it per count? Simpler, and nearly as good.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag">Stupid backoff</span>
+        <h3>No real probabilities at all — just a fixed discount, for speed at web scale</h3>
+        <div class="formula">P_bo(wᵢ|wᵢ₋₁) = P_MLE(wᵢ|wᵢ₋₁) if C(wᵢ₋₁wᵢ)&gt;0, else 0.4 × P_MLE(wᵢ)</div>
+        <p style="margin-top:8px;">The constant 0.4 is arbitrary and the result isn't a true probability distribution (it doesn't sum to 1) — but it's cheap to compute over billions of N-grams, which is the entire point: Google's web-scale N-gram release (mentioned in the book's bibliographical notes, §4.11) needed something this fast.</p>
+      </div>
+
+      <div class="card" style="margin-top:14px;">
+        <span class="tag plum">Kneser-Ney smoothing — the modern standard</span>
+        <h3>Your reading-glasses example is the book's San Francisco example, inverted</h3>
+        <p style="margin-bottom:10px;">"When I am reading a novel for a few hours, I need my reading ___" → <b>glasses</b>, not some rarer-but-frequent word. The book's version: <em>Francisco</em> is a frequent word overall, but it's frequent only because it almost always follows <em>San</em> — so backing off to raw unigram frequency would wrongly favor Francisco in a new context. <b>Glasses</b> appears after many different words, so it's the more versatile — more <em>continuation-worthy</em> — choice.</p>
+        <div class="formula">
+          P_CONT(wᵢ) = |{w′ : C(w′,wᵢ)&gt;0}| / |{(w′,w″) : C(w′,w″)&gt;0}|<br>
+          <span class="comment">= (# distinct words that precede wᵢ) / (# distinct bigram types in the whole corpus)</span>
+        </div>
+        <div class="formula" style="margin-top:8px;">
+          Bigram Kneser-Ney:<br>
+          P_KN(wᵢ|wᵢ₋₁) = max(C(wᵢ₋₁,wᵢ)−d, 0)/ΣC(wᵢ₋₁,w′) &nbsp;+&nbsp; λ(wᵢ₋₁)·P_CONT(wᵢ)<br><br>
+          λ(wᵢ₋₁) = d × |{w′: C(wᵢ₋₁,w′)&gt;0}| / ΣC(wᵢ₋₁,w′)&nbsp;&nbsp;<span class="comment">← leftover mass, redistributed via P_CONT</span>
+        </div>
+        <p style="margin-top:8px;">λ(wᵢ₋₁) is exactly "how many distinct words followed this context, times the discount, normalized" — the same intuition as Witten-Bell's N(context) term, reused to compute how much mass to hand down to the continuation-probability backoff. For a trigram, the same shape recurses one level deeper: P_KN(wᵢ|wᵢ₋₂wᵢ₋₁) backs off to P_KN(wᵢ|wᵢ₋₁), which in turn backs off to the unigram P_CONT.</p>
+      </div>
+    </section>
+
+    <!-- INTERPOLATION -->
+    <section id="interp">
+      <div class="section-head">
+        <div class="eyebrow">25/08</div>
+        <h2>Interpolation vs. backoff</h2>
+      </div>
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag">Interpolation: always blend every order</span>
+          <h3>P = λ₁P(wᵢ|wᵢ₋₂wᵢ₋₁) + λ₂P(wᵢ|wᵢ₋₁) + λ₃P(wᵢ), Σλ=1</h3>
+          <p>Your "point between P and Q" analogy is a genuinely good one: just as a weighted midpoint (mx₁+nx₂)/(m+n) sits <em>between</em> two points depending on the weights m,n, interpolation always mixes trigram, bigram, and unigram estimates together — never relying on just one order alone, even when the higher-order count is healthy. Constraint: λ₁+λ₂+λ₃=1, and typically λ₁&gt;λ₂&gt;λ₃ (trust the most specific, highest-order estimate the most, when it's available).</p>
+        </div>
+        <div class="card">
+          <span class="tag amber">Backoff: use ONE order, chosen by availability</span>
+          <h3>Trigram if seen; else fall to bigram; else unigram</h3>
+          <p>The key exam distinction: interpolation is a <em>weighted sum of all orders every time</em>; backoff is a <em>conditional cascade</em> — you only ever consult a lower order when the higher one has zero count. Both need the λ or α weights tuned via grid search on a <b>held-out</b> development set, never on the final test set (same train/dev/test discipline from the Pipeline section).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZIPF -->
+    <section id="zipf">
+      <div class="section-head">
+        <div class="eyebrow">31/08</div>
+        <h2>Zipf's Law</h2>
+      </div>
+      <div class="card">
+        <span class="tag">rank ∝ 1/frequency</span>
+        <h3>freq = a·b⁻ʳ, or log(freq) = log(a) − r·log(b)</h3>
+        <p style="margin-bottom:8px;">Plotting word frequency against rank gives a steep curve that's actually a straight line once you take logs — an <b>inverse power law</b>. The practical payoff, drawn right on your curve: the head of the distribution (rank 1, 2, 3…) is dominated by <b>stopwords</b> (the, a, is…) that carry almost no topical meaning; the long tail is where the <b>informative</b> content words live, but each individually has a very low count — which is precisely the sparse-data problem the entire smoothing chapter exists to solve. Fitting the line (a,b) is a small regression problem: minimize Σ(cᵢ − c_pred,ᵢ)² over the observed rank/frequency pairs — ordinary least squares, same idea as any linear-regression fit.</p>
+      </div>
+    </section>
+
+    <!-- BPE -->
+    <section id="bpe">
+      <div class="section-head">
+        <div class="eyebrow">Last page</div>
+        <h2>Byte-Pair Encoding (BPE)</h2>
+        <p>Originally a data-compression algorithm (Gage, 1994), repurposed as a subword tokenizer — the technique that actually sits underneath your "pretrained tokenizer" note from Day 2.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Your worked corpus</span>
+        <h3>huggingface(5), hugs(6), bugs(7), bun(4), bag(3), hugging(2)</h3>
+        <p style="margin-bottom:10px;">Starting vocabulary V_init = every unique character: {h,u,g,i,n,f,a,c,e,s,b}. BPE repeatedly counts adjacent symbol-pairs across the whole (frequency-weighted) corpus and merges the single most frequent pair into a new symbol, adding it to the vocabulary — then repeats on the updated corpus.</p>
+        <div class="formula">
+          Round 1 — pair counts include: count(h,u)=13, count(u,g)=20&nbsp;&nbsp;<span class="comment">← most frequent</span><br>
+          Merge (u,g) → "ug". &nbsp;New vocabulary V₁ = V_init ∪ {ug}<br><br>
+          Round 2 — recount pairs on the corpus written with "ug" as one symbol.<br>
+          Most frequent now: (h, ug) → merge into "hug". &nbsp;V₂ = V₁ ∪ {hug}<br><br>
+          … repeat …
+        </div>
+        <p style="margin-top:8px;">Stopping rule, exactly as your note states: stop merging once the vocabulary stops changing (or once you hit a pre-set target vocabulary size). The payoff: any new word at inference time — even one never seen in training — can still be represented as a sequence of known subword pieces instead of a single out-of-vocabulary token, which is the single biggest practical limitation BPE fixes relative to whole-word tokenization (and, by extension, relative to plain word-level N-gram models, which have no answer at all for a word outside their fixed vocabulary V).</p>
+      </div>
+      <div class="grid g2" style="margin-top:14px;">
+        <div class="card"><span class="tag amber">WordPiece</span><h3>Google's variant</h3><p>Merges the pair that most increases the training-data likelihood under a unigram language model, rather than simply the most frequent pair — a small but real refinement over vanilla BPE.</p></div>
+        <div class="card"><span class="tag amber">SentencePiece</span><h3>Language-agnostic variant</h3><p>Treats the input as a raw stream of Unicode characters (including whitespace as a normal symbol) rather than assuming whitespace already separates words — useful for languages like Chinese/Japanese/Thai, which your Ch. 3 notes on Chinese segmentation (maximum matching) already flagged as not using whitespace at all.</p></div>
+      </div>
+    </section>
+
+    <!-- CORRECTIONS -->
+    <section id="corrections">
+      <div class="section-head">
+        <div class="eyebrow">Housekeeping</div>
+        <h2>A few things worth confirming with your instructor</h2>
+        <p>Nothing here is a fundamental error in your understanding — these are small transcription slips (easy to make when copying fast in a live lecture) that are worth locking down before an exam, since dates/numbers are exactly what objective questions probe.</p>
+      </div>
+      <details class="qa">
+        <summary>"1970's, 1st translation system" — Georgetown-IBM date</summary>
+        <div class="a">Standardly dated to <b>1954</b> (IBM 701, Georgetown University, Russian→English demo). The 1970s is roughly when statistical/corpus-based methods started resurging <em>after</em> the 1966 ALPAC report had cut MT funding for a decade — so 1970s marks a different, later turning point in the same history, not the first system itself.</div>
+      </details>
+      <details class="qa">
+        <summary>ELIZA as "first healthcare assistant"</summary>
+        <div class="a">More precisely: the first widely-known chatbot, built to simulate a Rogerian (person-centered) psychotherapist. It's a reasonable informal description, but if a question asks for ELIZA's technical classification, the answer is "pattern-matching/substitution program," not a medical or clinical system — it has no actual understanding or diagnostic capability, which was in fact Weizenbaum's own point in raising ethical concerns about it being over-trusted.</div>
+      </details>
+      <details class="qa">
+        <summary>Number of sentences in the Georgetown-IBM demo</summary>
+        <div class="a">Commonly cited figures are a small vocabulary (~250 words) and 6 grammar rules, translating a modest set of prepared sentences (accounts vary, roughly 60). If your slides/instructor said 200, that may reflect a specific source they're using — worth a quick confirmation, but this number rarely appears in a graded question compared to the year and the language pair.</div>
+      </details>
+    </section>
+
+    <div class="footer">Sources: your class notes (27/07/2026 – 01/09/2026), cross-checked against Jurafsky & Martin, <em>Speech and Language Processing</em>, 2nd ed. (preliminary draft), Chapters 2–4. History facts about Turing/ELIZA/Georgetown-IBM are general NLP-history knowledge, not from this book edition — verify against your own course slides where they might differ.</div>
+  </main>
+</div>

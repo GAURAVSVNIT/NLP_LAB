@@ -1,0 +1,9 @@
+[project]
+name = "assignment-4"
+version = "0.1.0"
+description = "NLP Lab 4: unigram/bigram/trigram/quadrigram language models with Laplace smoothing on the Gujarati (guj_Gujr) corpus from Assignment 1"
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.11.1",
+    "pyarrow>=25.0.1",
+]
