@@ -1,0 +1,10 @@
+[project]
+name = "assignment-8"
+version = "0.1.0"
+description = "NLP Lab 8: Programmatic solutions to the NLP mid-semester questions and a noisy-channel spell corrector"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.10",
+    "numpy>=2.0",
+    "reportlab>=4.2.5",
+]

@@ -1,0 +1,751 @@
+{
+  "data": {
+    "unique_pairs": 39507,
+    "tokens": 41635,
+    "identical_after_lowercasing": 83,
+    "unique_typos": 36913,
+    "vocab_size": 333333,
+    "edit_types": 1587,
+    "edit_total": 39073,
+    "distance_histogram": {
+      "1": 14168,
+      "2": 9782,
+      "3": 6781,
+      "4": 8776
+    },
+    "typo_in_vocab_rate": 0.2582580302224922,
+    "correct_in_vocab_rate": 0.9783329536537829
+  },
+  "edit_direction_check": {
+    "typo|correct": {
+      "pearson_r": 0.8795010796588105,
+      "indel_keys": 646,
+      "missing_from_count_1edit": 32
+    },
+    "correct|typo": {
+      "pearson_r": 0.7188051892919961,
+      "indel_keys": 646,
+      "missing_from_count_1edit": 92
+    }
+  },
+  "p_err_default": 0.05,
+  "oracle": {
+    "d1": 0.3502417293137925,
+    "d2": 0.5939453767686739
+  },
+  "main": {
+    "detected|d1|prior": {
+      "accuracy": 0.26124484268610626,
+      "token_accuracy": 0.2701333013089948,
+      "n_pairs": 39507
+    },
+    "detected|d1|channel": {
+      "accuracy": 0.20322980737590807,
+      "token_accuracy": 0.20626876426083823,
+      "n_pairs": 39507
+    },
+    "detected|d1|noisy_joint": {
+      "accuracy": 0.2829625129723846,
+      "token_accuracy": 0.29417557343581124,
+      "n_pairs": 39507
+    },
+    "detected|d1|noisy_conditional": {
+      "accuracy": 0.29245450173386994,
+      "token_accuracy": 0.30452744085504985,
+      "n_pairs": 39507
+    },
+    "detected|d2|prior": {
+      "accuracy": 0.25625838459007266,
+      "token_accuracy": 0.25565029422360996,
+      "n_pairs": 39507
+    },
+    "detected|d2|channel": {
+      "accuracy": 0.2655225656212823,
+      "token_accuracy": 0.26600216164284857,
+      "n_pairs": 39507
+    },
+    "detected|d2|noisy_joint": {
+      "accuracy": 0.38907029134077503,
+      "token_accuracy": 0.3963492254113126,
+      "n_pairs": 39507
+    },
+    "detected|d2|noisy_conditional": {
+      "accuracy": 0.3711494165590908,
+      "token_accuracy": 0.380064849285457,
+      "n_pairs": 39507
+    },
+    "open|d1|prior": {
+      "accuracy": 0.25737211127142023,
+      "token_accuracy": 0.2656899243425003,
+      "n_pairs": 39507
+    },
+    "open|d1|channel": {
+      "accuracy": 0.15913635558255498,
+      "token_accuracy": 0.15657499699771826,
+      "n_pairs": 39507
+    },
+    "open|d1|noisy_joint": {
+      "accuracy": 0.19925582808109954,
+      "token_accuracy": 0.19726191905848445,
+      "n_pairs": 39507
+    },
+    "open|d1|noisy_conditional": {
+      "accuracy": 0.19566152833675046,
+      "token_accuracy": 0.19269845082262518,
+      "n_pairs": 39507
+    },
+    "open|d2|prior": {
+      "accuracy": 0.2547649783582656,
+      "token_accuracy": 0.25411312597574154,
+      "n_pairs": 39507
+    },
+    "open|d2|channel": {
+      "accuracy": 0.22061913078694914,
+      "token_accuracy": 0.2154197189864297,
+      "n_pairs": 39507
+    },
+    "open|d2|noisy_joint": {
+      "accuracy": 0.3025286658060597,
+      "token_accuracy": 0.29631319803050316,
+      "n_pairs": 39507
+    },
+    "open|d2|noisy_conditional": {
+      "accuracy": 0.2732427164806237,
+      "token_accuracy": 0.26703494655938514,
+      "n_pairs": 39507
+    }
+  },
+  "breakdown": {
+    "detected|d1|noisy_joint": {
+      "correct word reachable": {
+        "accuracy": 0.8079063380790634,
+        "token_accuracy": 0.7996343931579291,
+        "n_pairs": 13837
+      },
+      "distance=1": {
+        "accuracy": 0.7890316205533597,
+        "token_accuracy": 0.7776014221319282,
+        "n_pairs": 14168
+      },
+      "distance=1 non-word (classic setting)": {
+        "accuracy": 0.8848082079981345,
+        "token_accuracy": 0.8857656847312795,
+        "n_pairs": 8577
+      },
+      "distance=2": {
+        "accuracy": 0.0,
+        "token_accuracy": 0.0,
+        "n_pairs": 9782
+      },
+      "distance=3+": {
+        "accuracy": 0.0,
+        "token_accuracy": 0.0,
+        "n_pairs": 15557
+      },
+      "typo is a non-word": {
+        "accuracy": 0.258974883974884,
+        "token_accuracy": 0.2645221946141965,
+        "n_pairs": 29304
+      },
+      "typo is a vocabulary word": {
+        "accuracy": 0.35185729687346856,
+        "token_accuracy": 0.36868303383109763,
+        "n_pairs": 10203
+      }
+    },
+    "detected|d2|noisy_joint": {
+      "correct word reachable": {
+        "accuracy": 0.6550607287449393,
+        "token_accuracy": 0.650607159753982,
+        "n_pairs": 23465
+      },
+      "distance=1": {
+        "accuracy": 0.7851496329757199,
+        "token_accuracy": 0.7739826042790934,
+        "n_pairs": 14168
+      },
+      "distance=1 non-word (classic setting)": {
+        "accuracy": 0.8802611635770082,
+        "token_accuracy": 0.881268270744322,
+        "n_pairs": 8577
+      },
+      "distance=2": {
+        "accuracy": 0.4319157636475158,
+        "token_accuracy": 0.4194210835126149,
+        "n_pairs": 9782
+      },
+      "distance=3+": {
+        "accuracy": 0.0014141543999485761,
+        "token_accuracy": 0.0014050325712096053,
+        "n_pairs": 15557
+      },
+      "typo is a non-word": {
+        "accuracy": 0.3982050232050232,
+        "token_accuracy": 0.4029950977100262,
+        "n_pairs": 29304
+      },
+      "typo is a vocabulary word": {
+        "accuracy": 0.362834460452808,
+        "token_accuracy": 0.37965072133637057,
+        "n_pairs": 10203
+      }
+    },
+    "detected|d1|noisy_conditional": {
+      "correct word reachable": {
+        "accuracy": 0.8350075883500759,
+        "token_accuracy": 0.8277730626101717,
+        "n_pairs": 13837
+      },
+      "distance=1": {
+        "accuracy": 0.8154997176736307,
+        "token_accuracy": 0.8049647641419593,
+        "n_pairs": 14168
+      },
+      "distance=1 non-word (classic setting)": {
+        "accuracy": 0.901247522443745,
+        "token_accuracy": 0.9020688104340004,
+        "n_pairs": 8577
+      },
+      "distance=2": {
+        "accuracy": 0.0,
+        "token_accuracy": 0.0,
+        "n_pairs": 9782
+      },
+      "distance=3+": {
+        "accuracy": 0.0,
+        "token_accuracy": 0.0,
+        "n_pairs": 15557
+      },
+      "typo is a non-word": {
+        "accuracy": 0.2637865137865138,
+        "token_accuracy": 0.26939090725941844,
+        "n_pairs": 29304
+      },
+      "typo is a vocabulary word": {
+        "accuracy": 0.37479172792315985,
+        "token_accuracy": 0.39281194634269806,
+        "n_pairs": 10203
+      }
+    },
+    "detected|d2|noisy_conditional": {
+      "correct word reachable": {
+        "accuracy": 0.6248881312593224,
+        "token_accuracy": 0.6238763601955527,
+        "n_pairs": 23465
+      },
+      "distance=1": {
+        "accuracy": 0.8154997176736307,
+        "token_accuracy": 0.8049647641419593,
+        "n_pairs": 14168
+      },
+      "distance=1 non-word (classic setting)": {
+        "accuracy": 0.901247522443745,
+        "token_accuracy": 0.9020688104340004,
+        "n_pairs": 8577
+      },
+      "distance=2": {
+        "accuracy": 0.3157840932324678,
+        "token_accuracy": 0.3055935849794641,
+        "n_pairs": 9782
+      },
+      "distance=3+": {
+        "accuracy": 0.0012855949090441602,
+        "token_accuracy": 0.0012773023374632775,
+        "n_pairs": 15557
+      },
+      "typo is a non-word": {
+        "accuracy": 0.3683797433797434,
+        "token_accuracy": 0.3733127392384662,
+        "n_pairs": 29304
+      },
+      "typo is a vocabulary word": {
+        "accuracy": 0.37910418504361465,
+        "token_accuracy": 0.39703028769087995,
+        "n_pairs": 10203
+      }
+    },
+    "open|d1|noisy_joint": {
+      "correct word reachable": {
+        "accuracy": 0.5689094456890944,
+        "token_accuracy": 0.5362016060586277,
+        "n_pairs": 13837
+      },
+      "distance=1": {
+        "accuracy": 0.5556182947487295,
+        "token_accuracy": 0.521427210970732,
+        "n_pairs": 14168
+      },
+      "distance=1 non-word (classic setting)": {
+        "accuracy": 0.8848082079981345,
+        "token_accuracy": 0.8857656847312795,
+        "n_pairs": 8577
+      },
+      "distance=2": {
+        "accuracy": 0.0,
+        "token_accuracy": 0.0,
+        "n_pairs": 9782
+      },
+      "distance=3+": {
+        "accuracy": 0.0,
+        "token_accuracy": 0.0,
+        "n_pairs": 15557
+      },
+      "typo is a non-word": {
+        "accuracy": 0.258974883974884,
+        "token_accuracy": 0.2645221946141965,
+        "n_pairs": 29304
+      },
+      "typo is a vocabulary word": {
+        "accuracy": 0.02773694011565226,
+        "token_accuracy": 0.028262887032818696,
+        "n_pairs": 10203
+      }
+    }
+  },
+  "top_k": {
+    "detected|d1|noisy_joint": {
+      "top1": 0.2829625129723846,
+      "top3": 0.32892905054800414,
+      "top5": 0.33923102235046954
+    },
+    "detected|d2|noisy_joint": {
+      "top1": 0.38907029134077503,
+      "top3": 0.4909762826840813,
+      "top5": 0.5178575948566077
+    },
+    "detected|d1|noisy_conditional": {
+      "top1": 0.29245450173386994,
+      "top3": 0.33371301288379274,
+      "top5": 0.3420406510238692
+    },
+    "detected|d2|noisy_conditional": {
+      "top1": 0.3711494165590908,
+      "top3": 0.47885184903941075,
+      "top5": 0.5057078492419065
+    },
+    "open|d1|noisy_joint": {
+      "top1": 0.19925582808109954,
+      "top3": 0.3205254764978358,
+      "top5": 0.3358898423064267
+    }
+  },
+  "p_err_sweep": {
+    "d1|joint": {
+      "0.0001": 0.19209254056243197,
+      "0.001": 0.1921178525324626,
+      "0.01": 0.19328220315387146,
+      "0.05": 0.19925582808109954,
+      "0.1": 0.2053813248285114,
+      "0.3": 0.2220619130786949,
+      "0.5": 0.234287594603488,
+      "0.7": 0.24565266914723974,
+      "0.9": 0.26010580403472805,
+      "0.99": 0.27217961373933736
+    },
+    "d1|conditional": {
+      "0.0001": 0.19566152833675046,
+      "0.001": 0.19566152833675046,
+      "0.01": 0.19566152833675046,
+      "0.05": 0.19566152833675046,
+      "0.1": 0.19566152833675046,
+      "0.3": 0.19566152833675046,
+      "0.5": 0.19566152833675046,
+      "0.7": 0.19566152833675046,
+      "0.9": 0.19566152833675046,
+      "0.99": 0.19566152833675046
+    },
+    "d2|joint": {
+      "0.0001": 0.2953653782873921,
+      "0.001": 0.29539069025742276,
+      "0.01": 0.2965550408788316,
+      "0.05": 0.3025286658060597,
+      "0.1": 0.30865416255347156,
+      "0.3": 0.32533475080365504,
+      "0.5": 0.33748449641835626,
+      "0.7": 0.3489508188422305,
+      "0.9": 0.36375832131014757,
+      "0.99": 0.3763130584453388
+    },
+    "d2|conditional": {
+      "0.0001": 0.2732427164806237,
+      "0.001": 0.2732427164806237,
+      "0.01": 0.2732427164806237,
+      "0.05": 0.2732427164806237,
+      "0.1": 0.2732427164806237,
+      "0.3": 0.2732427164806237,
+      "0.5": 0.2732427164806237,
+      "0.7": 0.2732427164806237,
+      "0.9": 0.2732427164806237,
+      "0.99": 0.2732427164806237
+    }
+  },
+  "cross_validation": {
+    "count_1edit|d1|conditional": {
+      "mean": 0.29272629277259127,
+      "folds": [
+        0.29145459416019287,
+        0.30319291655486985,
+        0.28812711122231954,
+        0.28109248622670263,
+        0.2997643556988714
+      ]
+    },
+    "count_1edit|d1|joint": {
+      "mean": 0.2831512621172944,
+      "folds": [
+        0.2806054111974283,
+        0.29178964314462036,
+        0.2793694482672338,
+        0.27464541085453054,
+        0.2893463971226591
+      ]
+    },
+    "count_1edit|d2|conditional": {
+      "mean": 0.3712606864572444,
+      "folds": [
+        0.3683364586123761,
+        0.3746981486450228,
+        0.36857250093832106,
+        0.3622084163638495,
+        0.3824879077266526
+      ]
+    },
+    "count_1edit|d2|joint": {
+      "mean": 0.3890530370149289,
+      "folds": [
+        0.38226627377444417,
+        0.38878454521062517,
+        0.39171775303390466,
+        0.38190130113702964,
+        0.40059531191864073
+      ]
+    },
+    "held_out|d1|conditional": {
+      "mean": 0.29306740586767155,
+      "folds": [
+        0.2913206536297884,
+        0.30346122887040516,
+        0.2888777680470412,
+        0.2819130230922518,
+        0.2997643556988714
+      ]
+    },
+    "held_out|d1|joint": {
+      "mean": 0.28097749440095615,
+      "folds": [
+        0.2783284221805518,
+        0.290045613093641,
+        0.2764919304391342,
+        0.27253545891454695,
+        0.28748604737690686
+      ]
+    },
+    "held_out|d2|conditional": {
+      "mean": 0.37187344354421187,
+      "folds": [
+        0.3690061612643986,
+        0.37550308559162865,
+        0.36982359564619044,
+        0.36279451412495606,
+        0.38223986109388564
+      ]
+    },
+    "held_out|d2|joint": {
+      "mean": 0.3847777860901161,
+      "folds": [
+        0.3790517010447361,
+        0.3838207673732224,
+        0.3894657825597398,
+        0.3760403235259641,
+        0.395510355946918
+      ]
+    }
+  },
+  "cross_validation_note": "5 folds grouped by correct word; held_out counts are re-derived from the training folds by aligning each pair with <= 2 edits.",
+  "examples": [
+    {
+      "typo": "pigen",
+      "correct": "pigeon",
+      "distance": 1,
+      "pred_d1": "pigeon",
+      "pred_d2": "page",
+      "top3_d1": [
+        "pigeon",
+        "pgen",
+        "igen"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "exsibition",
+      "correct": "exhibition",
+      "distance": 1,
+      "pred_d1": "exhibition",
+      "pred_d2": "exhibition",
+      "top3_d1": [
+        "exhibition",
+        "exibition"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "surplis",
+      "correct": "surplus",
+      "distance": 1,
+      "pred_d1": "surplus",
+      "pred_d2": "surplus",
+      "top3_d1": [
+        "surplus",
+        "surpris"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "neddle",
+      "correct": "needle",
+      "distance": 1,
+      "pred_d1": "needle",
+      "pred_d2": "middle",
+      "top3_d1": [
+        "needle",
+        "meddle",
+        "neddie"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "counscious",
+      "correct": "conscious",
+      "distance": 1,
+      "pred_d1": "conscious",
+      "pred_d2": "conscious",
+      "top3_d1": [
+        "conscious"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "temporarrly",
+      "correct": "temporarily",
+      "distance": 1,
+      "pred_d1": "temporarily",
+      "pred_d2": "temporarily",
+      "top3_d1": [
+        "temporarily"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "baragining",
+      "correct": "bargaining",
+      "distance": 1,
+      "pred_d1": "bargaining",
+      "pred_d2": "bargaining",
+      "top3_d1": [
+        "bargaining"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "inconvenince",
+      "correct": "inconvenience",
+      "distance": 1,
+      "pred_d1": "inconvenience",
+      "pred_d2": "inconvenience",
+      "top3_d1": [
+        "inconvenience"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "coform",
+      "correct": "conform",
+      "distance": 1,
+      "pred_d1": "conform",
+      "pred_d2": "conform",
+      "top3_d1": [
+        "conform"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "intertain",
+      "correct": "entertain",
+      "distance": 1,
+      "pred_d1": "entertain",
+      "pred_d2": "entertain",
+      "top3_d1": [
+        "entertain"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "princibles",
+      "correct": "principles",
+      "distance": 1,
+      "pred_d1": "principles",
+      "pred_d2": "principles",
+      "top3_d1": [
+        "principles"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "analitic",
+      "correct": "analytic",
+      "distance": 1,
+      "pred_d1": "analytic",
+      "pred_d2": "analytic",
+      "top3_d1": [
+        "analytic"
+      ],
+      "correct_d1": true
+    },
+    {
+      "typo": "cack",
+      "correct": "cake",
+      "distance": 2,
+      "pred_d1": "cock",
+      "pred_d2": "cock",
+      "top3_d1": [
+        "cock",
+        "pack",
+        "sack"
+      ],
+      "correct_d1": false
+    },
+    {
+      "typo": "a veod",
+      "correct": "avoid",
+      "distance": 3,
+      "pred_d1": null,
+      "pred_d2": "aviod",
+      "top3_d1": [],
+      "correct_d1": false
+    },
+    {
+      "typo": "slow",
+      "correct": "so",
+      "distance": 2,
+      "pred_d1": "low",
+      "pred_d2": "low",
+      "top3_d1": [
+        "low",
+        "flow",
+        "snow"
+      ],
+      "correct_d1": false
+    },
+    {
+      "typo": "tate",
+      "correct": "traffic",
+      "distance": 5,
+      "pred_d1": "date",
+      "pred_d2": "date",
+      "top3_d1": [
+        "date",
+        "state",
+        "take"
+      ],
+      "correct_d1": false
+    },
+    {
+      "typo": "occaisionly",
+      "correct": "occasionally",
+      "distance": 3,
+      "pred_d1": null,
+      "pred_d2": "occaisionally",
+      "top3_d1": [],
+      "correct_d1": false
+    },
+    {
+      "typo": "catologes",
+      "correct": "catalogues",
+      "distance": 2,
+      "pred_d1": null,
+      "pred_d2": "catalogs",
+      "top3_d1": [],
+      "correct_d1": false
+    },
+    {
+      "typo": "fretenery",
+      "correct": "fraternally",
+      "distance": 5,
+      "pred_d1": null,
+      "pred_d2": "freeney",
+      "top3_d1": [],
+      "correct_d1": false
+    },
+    {
+      "typo": "accewed",
+      "correct": "accrued",
+      "distance": 2,
+      "pred_d1": "acceded",
+      "pred_d2": "accessed",
+      "top3_d1": [
+        "acceded"
+      ],
+      "correct_d1": false
+    },
+    {
+      "typo": "bearied",
+      "correct": "buried",
+      "distance": 2,
+      "pred_d1": "bearded",
+      "pred_d2": "beard",
+      "top3_d1": [
+        "bearded",
+        "berried",
+        "wearied"
+      ],
+      "correct_d1": false
+    },
+    {
+      "typo": "snoraty",
+      "correct": "sorority",
+      "distance": 3,
+      "pred_d1": null,
+      "pred_d2": "snooty",
+      "top3_d1": [],
+      "correct_d1": false
+    },
+    {
+      "typo": "fut",
+      "correct": "fruit",
+      "distance": 2,
+      "pred_d1": "fat",
+      "pred_d2": "fat",
+      "top3_d1": [
+        "fat",
+        "fit",
+        "but"
+      ],
+      "correct_d1": false
+    },
+    {
+      "typo": "negoshation",
+      "correct": "negotiations",
+      "distance": 3,
+      "pred_d1": null,
+      "pred_d2": "negotiation",
+      "top3_d1": [],
+      "correct_d1": false
+    }
+  ],
+  "assignment_example": {
+    "rainning": {
+      "d1": [
+        "raining",
+        "trainning"
+      ]
+    },
+    "raning": {
+      "d1": [
+        "rating",
+        "ranging",
+        "raining"
+      ]
+    }
+  },
+  "seconds": 698.2565232780003
+}
